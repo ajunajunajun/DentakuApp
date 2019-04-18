@@ -9,7 +9,7 @@ export default class App extends React.Component {
       display: '0',
       operator: '',
       displayFlag: true,
-      operatorFlag: false
+      operatorFlag: false,
     };
   }
   render() {
@@ -141,7 +141,8 @@ export default class App extends React.Component {
     });
   }
   _numSeto = () => {
-
+    let str = this.state.display/10;
+    this.setState({display:str});
   }
   _numSet = i => {
     if(this.state.displayFlag == true){
