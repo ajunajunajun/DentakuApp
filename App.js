@@ -94,11 +94,7 @@ export default class App extends React.Component {
           </View>
           <View style={styles.viewButton}>
             {NumButtons123}
-            <TouchableOpacity style={[styles.equalButton,{backgroundColor: 'orange'}]}
-              onPress={ this._equal }
-            >
-              <Text style={styles.buttonText}>=</Text>
-            </TouchableOpacity>
+            <View style={{flex:1}}/>
           </View>
           <View style={styles.viewButton}>
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'snow'}]}
@@ -116,7 +112,11 @@ export default class App extends React.Component {
             >
               <Text style={styles.buttonText}>.</Text>
             </TouchableOpacity>
-            <View style={{flex:1}}/>
+            <TouchableOpacity style={[styles.equalButton,{backgroundColor: 'orange'}]}
+              onPress={ this._equal }
+            >
+              <Text style={styles.buttonText}>=</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{flex:0.5}}/>
@@ -271,16 +271,15 @@ const styles = StyleSheet.create({
   },
   equalButton: {
     flex: 1,
-    paddingBottom: '50%',
-    marginBottom: '50%',
+    bottom:'25%',
+    paddingBottom:'50%',
     height:'100%',
     width:'100%',
-    flexDirection:'row',
     borderRadius:30,
   },
   buttonText: {
     fontSize: 50,
     textAlign: 'center',
     width:'100%'
-  }
+  },
 });
