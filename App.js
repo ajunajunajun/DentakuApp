@@ -48,12 +48,12 @@ export default class App extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <View style={{flex:0.5}}/>
+        <View style={{flex:0.3}}/>
         <View style={styles.display}>
-          <Text style={{fontSize:100}}>{this.state.display}</Text>
+          <Text style={{fontSize:70, marginLeft:10}}>{this.state.display}</Text>
         </View>
-        <View style={{flex:5}}>
-          <View style={{flex:0.5}}/>
+        <View style={{flex:0.5}}/>
+        <View style={{flex:3}}>
           <View style={styles.viewButton}>
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'lightgray'}]}
               onPress={ () => this._Arithmetic('+') }
@@ -94,19 +94,55 @@ export default class App extends React.Component {
           </View>
           <View style={styles.viewButton}>
             {NumButtons123}
-            <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
+            <TouchableOpacity style={[styles.equalButton,{backgroundColor: 'orange'}]}
               onPress={ this._equal }
             >
               <Text style={styles.buttonText}>=</Text>
             </TouchableOpacity>
           </View>
-          <View style={{flex:0.5}}/>
+          <View style={styles.viewButton}>
+            <TouchableOpacity style={[styles.Button,{backgroundColor: 'snow'}]}
+              onPress={ () => this._numSet(0) }
+            >
+              <Text style={styles.buttonText}>0</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.Button,{backgroundColor: 'snow'}]}
+              onPress={ this._numSet00 }
+            >
+              <Text style={styles.buttonText}>00</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.Button,{backgroundColor: 'snow'}]}
+              onPress={ this._numSeto }
+            >
+              <Text style={styles.buttonText}>.</Text>
+            </TouchableOpacity>
+            <View style={{flex:1}}/>
+          </View>
         </View>
         <View style={{flex:0.5}}/>
       </View>
     );
   }
 
+  _numSet00 = () => {
+    if(this.state.displayFlag == true){
+      let str = this.state.display;
+      this.setState({
+        strmath:str,
+        display: 0,
+        displayFlag: false
+      });
+    } else {
+      let str = this.state.display*100;
+      this.setState({display:str});
+    }
+    this.setState({
+      operatorFlag: true
+    });
+  }
+  _numSeto = () => {
+
+  }
   _numSet = i => {
     if(this.state.displayFlag == true){
       let str = this.state.display;
@@ -216,7 +252,9 @@ const styles = StyleSheet.create({
     flex:1,
     height:'100%',
     width:'100%',
-    backgroundColor: 'lightgray'
+    backgroundColor: 'lightgray',
+    justifyContent: 'center',
+    borderRadius:15,
   },
   viewButton: {
     flex:1,
@@ -229,9 +267,20 @@ const styles = StyleSheet.create({
     height:'100%',
     width:'100%',
     flexDirection:'row',
-    borderRadius:100,
+    borderRadius:30,
+  },
+  equalButton: {
+    flex: 1,
+    paddingBottom: '50%',
+    marginBottom: '50%',
+    height:'100%',
+    width:'100%',
+    flexDirection:'row',
+    borderRadius:30,
   },
   buttonText: {
-    fontSize: 50
+    fontSize: 50,
+    textAlign: 'center',
+    width:'100%'
   }
 });
