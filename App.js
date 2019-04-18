@@ -5,10 +5,10 @@ export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      strmath: '',
-      display: '',
+      strmath: '0',
+      display: '0',
       operator: '',
-      displayFlag: false,
+      displayFlag: true,
       operatorFlag: false
     };
   }
@@ -79,7 +79,7 @@ export default class App extends React.Component {
           <View style={styles.viewButton}>
             {NumButtons789}
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
-              onPress={ () => this._numSet(1) }
+              onPress={ this._ac }
             >
               <Text style={styles.buttonText}>AC</Text>
             </TouchableOpacity>
@@ -87,7 +87,7 @@ export default class App extends React.Component {
           <View style={styles.viewButton}>
             {NumButtons456}
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
-              onPress={ () => this._numSet(1) }
+              onPress={ this._c }
             >
               <Text style={styles.buttonText}>C</Text>
             </TouchableOpacity>
@@ -95,7 +95,7 @@ export default class App extends React.Component {
           <View style={styles.viewButton}>
             {NumButtons123}
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
-              onPress={ () => this._numSet(1) }
+              onPress={ this._equal }
             >
               <Text style={styles.buttonText}>=</Text>
             </TouchableOpacity>
@@ -158,7 +158,51 @@ export default class App extends React.Component {
       });
     }
   }
-
+  _ac = () => {
+    this.setState({
+      strmath: '0',
+      display: '0',
+      operator: '',
+      displayFlag: true,
+      operatorFlag: false
+    });
+  }
+  _c = () => {
+    if(this.state.operatorFlag == true || this.state.operator !== ''){
+      this.setState({ display: '0'});
+    }
+  }
+  _equal = () => {
+    let str = this.state.strmath;
+    if(this.state.strmath == '0'){
+      str = this.state.display;
+    }
+    if(this.state.operator !== ''){
+      switch (this.state.operator){
+        case '+':
+          str = this.state.strmath + this.state.display;
+          break;
+        case '-':
+          str = this.state.strmath - this.state.display;
+          break;
+        case '*':
+          str = this.state.strmath * this.state.display;
+          break;
+        case '/':
+          str = this.state.strmath / this.state.display;
+          break;
+      }
+    } else {
+      str = this.state.display;
+    }
+    this.setState({
+      strmath: str,
+      display: str,
+      operator: '',
+      displayFlag: true,
+      operatorFlag: true
+    });
+  }
 }
 
 const styles = StyleSheet.create({
