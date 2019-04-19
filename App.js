@@ -14,7 +14,8 @@ export default class App extends React.Component {
       displayFlag: true,
       operatorFlag: false,
       AnimFlex: new Animated.Value(0), AnimFlag: true,
-      AnimFlex2: new Animated.Value(1)
+      AnimFlex2: new Animated.Value(1),
+      modeFlag: true
     };
   }
   render() {
@@ -56,6 +57,7 @@ export default class App extends React.Component {
     for(let i = 0; i < Object.keys(jsondata['formulas']).length ; i++){
       Formulas.push(
         <TouchableOpacity style={{flex:1}}
+          key={i}
           onPress={() => this._numSet(i)}
         >
           <Text style={{fontSize:30}}>
@@ -67,7 +69,6 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{flex:0.3}}/>
-
         <TouchableOpacity style={{flex:1,width:'100%'}}
           onPress={ this._AnimDisplay }
         >
@@ -75,7 +76,6 @@ export default class App extends React.Component {
             <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
           </View>
         </TouchableOpacity>
-
         <Animated.View style={[styles.animView,{flex: this.state.AnimFlex}]}>
           <ScrollView style={{flex:1, marginLeft:20}}>
             {Formulas}
@@ -84,6 +84,32 @@ export default class App extends React.Component {
         <Animated.View style={{flex:this.state.AnimFlex2}}/>
 
         <View style={{flex:3}}>
+          { this.state.modeFlag ?
+            <Text/>
+            :
+            <View style={styles.viewButton}>
+              <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
+                onPress={ this._ac }
+              >
+                <Text style={styles.buttonText}>あ</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
+                onPress={ this._c }
+              >
+                <Text style={styles.buttonText}>い</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
+                onPress={ this._c }
+              >
+                <Text style={styles.buttonText}>う</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
+                onPress={ () => this._Arithmetic('/') }
+              >
+                <Text style={styles.buttonText}>え</Text>
+              </TouchableOpacity>
+            </View>
+          }
           <View style={styles.viewButton}>
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
               onPress={ this._ac }
@@ -95,7 +121,9 @@ export default class App extends React.Component {
             >
               <Text style={styles.buttonText}>C</Text>
             </TouchableOpacity>
-            <View style={{flex:1}}/>
+            <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
+              onPress={ this._AnimDisplay }
+            />
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
               onPress={ () => this._Arithmetic('/') }
             >
@@ -160,6 +188,7 @@ export default class App extends React.Component {
         duration: 300,
       }).start();
       this.setState({AnimFlag:false});
+      this.setState({modeFlag:false});
     } else {
       Animated.timing(this.state.AnimFlex,{
         toValue: 0,
@@ -170,6 +199,7 @@ export default class App extends React.Component {
         duration: 300,
       }).start();
       this.setState({AnimFlag:true});
+      this.setState({modeFlag:true});
     }
   }
 
