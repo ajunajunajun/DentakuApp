@@ -15,6 +15,7 @@ export default class App extends React.Component {
       operatorFlag: false,
       AnimFlex: new Animated.Value(0), AnimFlag: true,
       AnimFlex2: new Animated.Value(1),
+      AnimRadius: new Animated.Value(30),
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow'
     };
@@ -69,7 +70,7 @@ export default class App extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <View style={{flex:0.3}}/>
+        <View style={{flex:0.4}}/>
         { this.state.addFlag ?
           <View style={{flex:2,width:'100%'}}>
             <View style={styles.addDisplay}>
@@ -82,11 +83,11 @@ export default class App extends React.Component {
             <TouchableOpacity style={{flex:1,width:'100%'}}
               onPress={ this._AnimDisplay }
             >
-              <View style={styles.display}>
+              <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
                 <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
-              </View>
+              </Animated.View>
             </TouchableOpacity>
-            <Animated.View style={[styles.animView,{flex: this.state.AnimFlex}]}>
+            <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
               <ScrollView style={{flex:1, marginLeft:20}}>
                 {Formulas}
               </ScrollView>
@@ -117,7 +118,7 @@ export default class App extends React.Component {
             <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
               onPress={ () => this._Arithmetic('/') }
             >
-              <Text style={styles.buttonText}>いえい</Text>
+              <Text style={styles.buttonText}>Enter</Text>
             </TouchableOpacity>
           </View>
         }
@@ -198,6 +199,10 @@ export default class App extends React.Component {
         toValue: 0.15,
         duration: 300,
       }).start();
+      Animated.timing(this.state.AnimRadius,{
+        toValue: 0,
+        duration: 30,
+      }).start();
       this.setState({
         AnimFlag:false,
         modeFlag:false,
@@ -211,6 +216,10 @@ export default class App extends React.Component {
       Animated.timing(this.state.AnimFlex2,{
         toValue: 1,
         duration: 300,
+      }).start();
+      Animated.timing(this.state.AnimRadius,{
+        toValue: 30,
+        duration: 1000,
       }).start();
       this.setState({
         AnimFlag:true,
