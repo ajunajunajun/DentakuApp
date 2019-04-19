@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView } from 'react-native';
+
+
+import jsondata from './src/formulas.json';
 
 export default class App extends React.Component {
   constructor(props){
@@ -10,8 +13,8 @@ export default class App extends React.Component {
       operator: '',
       displayFlag: true,
       operatorFlag: false,
-      AnimFlex: new Animated.Value(0.1), AnimFlag: true,
-      AnimFlex2: new Animated.Value(0.9)
+      AnimFlex: new Animated.Value(0), AnimFlag: true,
+      AnimFlex2: new Animated.Value(1)
     };
   }
   render() {
@@ -48,22 +51,37 @@ export default class App extends React.Component {
         );
       }
     }
+
+    var Formulas = [];
+    for(let i = 0; i < Object.keys(jsondata['formulas']).length ; i++){
+      Formulas.push(
+        <TouchableOpacity style={{flex:1}}
+          onPress={() => this._numSet(i)}
+        >
+          <Text style={{fontSize:30}}>
+            {jsondata.formulas[i].id}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={{flex:0.3}}/>
 
-        <TouchableOpacity style={{flex:2,width:'100%'}}
+        <TouchableOpacity style={{flex:1,width:'100%'}}
           onPress={ this._AnimDisplay }
         >
           <View style={styles.display}>
-            <Text style={{fontSize:70, marginLeft:10}}>{this.state.display}</Text>
+            <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
           </View>
-          <Animated.View style={[styles.animView,{flex: this.state.AnimFlex}]}>
-            <Text style={{fontSize:70, marginLeft:10}}>ｖ・。・ｖ</Text>
-          </Animated.View>
-          <Animated.View style={{flex:this.state.AnimFlex2}}/>
-
         </TouchableOpacity>
+
+        <Animated.View style={[styles.animView,{flex: this.state.AnimFlex}]}>
+          <ScrollView style={{flex:1, marginLeft:20}}>
+            {Formulas}
+          </ScrollView>
+         </Animated.View>
+        <Animated.View style={{flex:this.state.AnimFlex2}}/>
 
         <View style={{flex:3}}>
           <View style={styles.viewButton}>
@@ -144,11 +162,11 @@ export default class App extends React.Component {
       this.setState({AnimFlag:false});
     } else {
       Animated.timing(this.state.AnimFlex,{
-        toValue: 0.1,
+        toValue: 0,
         duration: 300,
       }).start();
       Animated.timing(this.state.AnimFlex2,{
-        toValue: 0.9,
+        toValue: 1,
         duration: 300,
       }).start();
       this.setState({AnimFlag:true});
@@ -316,7 +334,7 @@ const styles = StyleSheet.create({
     borderRadius:30,
   },
   buttonText: {
-    fontSize: 50,
+    fontSize: 30,
     textAlign: 'center',
     width:'100%'
   },
