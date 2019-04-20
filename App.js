@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView, TextInput} from 'react-native';
-
-
-import jsondata from './src/formulas.json';
+import {
+  StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView, TextInput, AsyncStorage
+} from 'react-native';
 
 export default class App extends React.Component {
   constructor(props){
@@ -18,7 +17,8 @@ export default class App extends React.Component {
       AnimRadius: new Animated.Value(30),
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow',
-      addName: 'name', addText: 'a + b * 2 = '
+      addName: 'name', addText: 'a + b * 2 = ',
+      Formulas:[], formulasCount: 0
     };
   }
   render() {
@@ -56,19 +56,6 @@ export default class App extends React.Component {
       }
     }
 
-    var Formulas = [];
-    for(let i = 0; i < Object.keys(jsondata['formulas']).length ; i++){
-      Formulas.push(
-        <TouchableOpacity style={{flex:1}}
-          key={i}
-          onPress={() => alert(i+1)}
-        >
-          <Text style={{fontSize:20, width:'95%'}}>
-            {jsondata.formulas[i].name}, {jsondata.formulas[i].text}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
     return (
       <View style={styles.container}>
         <View style={{flex:0.4}}/>
@@ -104,7 +91,7 @@ export default class App extends React.Component {
             </TouchableOpacity>
             <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
               <ScrollView style={{flex:1, marginLeft:20}}>
-                {Formulas}
+                {this.state.Formulas}
               </ScrollView>
              </Animated.View>
             <Animated.View style={{flex:this.state.AnimFlex2}}/>
@@ -248,8 +235,28 @@ export default class App extends React.Component {
       });
     }
   }
-  _pressEnter = () => {
-    alert();
+  _pressEnter = async () => {
+    let object = {formulas:{'name': this.state.addName, 'text': this.state.addText}};
+    try{
+      await AsyncStorage.setItem('formulas',JSON.stringify(object));
+      const value = await AsyncStorage.getItem('formulas');
+      //仮count いずれStorageにいれなきゃ
+      this.setState({formulasCount:this.state.formulasCount+1});
+      const count = this.state.formulasCount;
+      this.state.Formulas.push(
+        <TouchableOpacity style={{flex:1}}
+          onPress={() => alert(count)}
+          key={this.state.formulasCount}
+        >
+          <Text style={{fontSize:20, width:'95%'}}>
+            {value}
+          </Text>
+        </TouchableOpacity>
+      );
+      alert('success');
+    } catch (error) {
+      alert('error');
+    }
   }
 
   _numSet00 = () => {
