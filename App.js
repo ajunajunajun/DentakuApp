@@ -241,6 +241,7 @@ export default class App extends React.Component {
       await AsyncStorage.setItem('formulas',JSON.stringify(object));
       const value = await AsyncStorage.getItem('formulas');
       //仮count いずれStorageにいれなきゃ
+      //はじめに全部ロードかかなきゃ、ここじゃだめ
       this.setState({formulasCount:this.state.formulasCount+1});
       const count = this.state.formulasCount;
       this.state.Formulas.push(
