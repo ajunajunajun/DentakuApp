@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView, TextInput} from 'react-native';
 
 
 import jsondata from './src/formulas.json';
@@ -17,7 +17,8 @@ export default class App extends React.Component {
       AnimFlex2: new Animated.Value(1),
       AnimRadius: new Animated.Value(30),
       modeFlag: true, modeColor:'yellow',
-      addFlag:false, addColor:'yellow'
+      addFlag:false, addColor:'yellow',
+      addName: 'name', addText: 'a + b * 2 = '
     };
   }
   render() {
@@ -62,8 +63,8 @@ export default class App extends React.Component {
           key={i}
           onPress={() => alert(i+1)}
         >
-          <Text style={{fontSize:30}}>
-            {jsondata.formulas[i].id}
+          <Text style={{fontSize:20, width:'95%'}}>
+            {jsondata.formulas[i].name}, {jsondata.formulas[i].text}
           </Text>
         </TouchableOpacity>
       );
@@ -74,7 +75,21 @@ export default class App extends React.Component {
         { this.state.addFlag ?
           <View style={{flex:2,width:'100%'}}>
             <View style={styles.addDisplay}>
-              <Text style={{fontSize:50, marginLeft:10}}>ADD</Text>
+              <Text style={{fontSize:50, marginLeft:10}}>ADD Mode</Text>
+              <TextInput style={{fontSize:40, marginLeft:10,height:'10%',width:'90%'}}
+                onChangeText={(addName) => this.setState({addName})}
+                value={this.state.addName}
+              />
+              <TextInput style={{fontSize:30, marginLeft:10,height:'60%',width:'90%'}}
+                onChangeText={(addText) => this.setState({addText})}
+                value={this.state.addText}
+                multiline
+              />
+              <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
+                onPress={ this._pressEnter }
+              >
+                <Text style={styles.buttonText}>Enter</Text>
+              </TouchableOpacity>
             </View>
             <View style={{flex:0.15}}/>
           </View>
@@ -109,16 +124,6 @@ export default class App extends React.Component {
               onPress={ this._c }
             >
               <Text style={styles.buttonText}>del</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
-              onPress={ this._c }
-            >
-              <Text style={styles.buttonText}>あああ</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
-              onPress={ () => this._Arithmetic('/') }
-            >
-              <Text style={styles.buttonText}>Enter</Text>
             </TouchableOpacity>
           </View>
         }
@@ -241,9 +246,12 @@ export default class App extends React.Component {
         addFlag:true,
         addColor: 'gold'
       });
-
     }
   }
+  _pressEnter = () => {
+    alert();
+  }
+
   _numSet00 = () => {
     if(this.state.displayFlag == true){
       let str = this.state.display;
@@ -405,6 +413,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius:30,
+  },
+  enterButton: {
+    position: 'absolute',
+    height:'20%',
+    width:'20%',
+    right: 10,
+    bottom:10,
+    borderRadius:30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   equalButton: {
     flex: 2,
