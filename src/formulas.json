@@ -1,9 +1,0 @@
-{
-  "formulas" : [
-    { "name": "消費税", "text": "a * 1.08 ="},
-    { "name": "三角形の面積", "text": "a * b / 2 ="},
-    { "name": "tasizan", "text": "a + a ="},
-    { "name": "tasizan", "text": "a + a ="},
-    { "name": "tasizan", "text": "a + a ="}
-  ]
-}
