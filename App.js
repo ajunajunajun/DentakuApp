@@ -59,29 +59,28 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{flex:0.4}}/>
+        <View style={{flex:2,width:'100%'}}>
         { this.state.addFlag ?
-          <View style={{flex:2,width:'100%'}}>
-            <View style={styles.addDisplay}>
-              <Text style={{fontSize:50, marginLeft:10}}>ADD Mode</Text>
-              <TextInput style={{fontSize:40, marginLeft:10,height:'10%',width:'90%'}}
-                onChangeText={(addName) => this.setState({addName})}
-                value={this.state.addName}
-              />
-              <TextInput style={{fontSize:30, marginLeft:10,height:'60%',width:'90%'}}
-                onChangeText={(addText) => this.setState({addText})}
-                value={this.state.addText}
-                multiline
-              />
-              <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
-                onPress={ this._pressEnter }
-              >
-                <Text style={styles.buttonText}>Enter</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{flex:0.15}}/>
+          <View style={styles.addDisplay}>
+            <Text style={{fontSize:50, marginLeft:10}}>ADD Mode</Text>
+            <TextInput style={{fontSize:40, marginLeft:10,height:'10%',width:'90%'}}
+              onChangeText={(addName) => this.setState({addName})}
+              value={this.state.addName}
+            />
+            <TextInput style={{fontSize:30, marginLeft:10,height:'60%',width:'90%'}}
+              onChangeText={(addText) => this.setState({addText})}
+              value={this.state.addText}
+              multiline
+            />
+            <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
+              onPress={ this._pressEnter }
+            >
+              <Text style={styles.buttonText}>Enter</Text>
+            </TouchableOpacity>
           </View>
           :
           <View style={{flex:2,width:'100%'}}>
+            <Animated.View style={{flex:this.state.AnimFlex2}}/>
             <TouchableOpacity style={{flex:1,width:'100%'}}
               onPress={ this._AnimDisplay }
             >
@@ -93,13 +92,14 @@ export default class App extends React.Component {
               <ScrollView style={{flex:1, marginLeft:20}}>
                 {this.state.Formulas}
               </ScrollView>
-             </Animated.View>
-            <Animated.View style={{flex:this.state.AnimFlex2}}/>
+            </Animated.View>
           </View>
         }
+        </View>
+        <View style={{flex:0.2}}/>
         <View style={{flex:3}}>
         { this.state.modeFlag ?
-          <Text/>
+          <View style={{flex:0}}/>
           :
           <View style={styles.viewButton}>
             <TouchableOpacity style={[styles.Button,{backgroundColor:this.state.addColor}]}
@@ -184,16 +184,16 @@ export default class App extends React.Component {
   _AnimDisplay = () => {
     if( this.state.AnimFlag === true ){
       Animated.timing(this.state.AnimFlex,{
-        toValue: 0.85,
+        toValue: 1,
         duration: 300,
       }).start();
       Animated.timing(this.state.AnimFlex2,{
-        toValue: 0.15,
+        toValue: 0,
         duration: 300,
       }).start();
       Animated.timing(this.state.AnimRadius,{
         toValue: 0,
-        duration: 30,
+        duration: 80,
       }).start();
       this.setState({
         AnimFlag:false,
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius:30,
   },
   addDisplay: {
-    flex:1.85,
+    flex:2,
     height:'100%',
     width:'100%',
     backgroundColor: 'snow',
