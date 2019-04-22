@@ -19,6 +19,7 @@ export default class App extends React.Component {
       addFlag:false, addColor:'yellow',
       addName: 'name', addText: 'a + b * 2 = ',
       delFlag:false, delColor:'yellow',
+      setFormulasFlag:false,
       Formulas:[], formulasCount: 0
     };
   }
@@ -278,9 +279,7 @@ export default class App extends React.Component {
     }
   }
   _pressEnter = async () => {
-
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
-
     try{
       this.setState({
         formulasCount: this.state.formulasCount+1
@@ -295,7 +294,7 @@ export default class App extends React.Component {
       // atarasii no wo ue ni tuika sitai
       this.state.Formulas.push(
         <TouchableOpacity style={{flex:1}}
-          onPress={() => alert(count)}
+          onPress={() => this._setFormulas(count)}
           key={count}
         >
           <Text style={{fontSize:20, width:'95%'}}>
@@ -321,9 +320,13 @@ export default class App extends React.Component {
 
         addFlag:false,
         addColor: 'yellow'
-
       });
     }
+  }
+
+  _setFormulas = i => {
+    this.setState({setFormulasFlag:true});
+    alert(i);
   }
 
   _numSet00 = () => {
