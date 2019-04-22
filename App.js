@@ -21,6 +21,18 @@ export default class App extends React.Component {
       Formulas:[], formulasCount: 0
     };
   }
+
+  componentWillMount(){
+    let object = {
+      'count': this.state.formulasCount,
+      'formulas': [
+      ],
+    };
+    async () => {
+      await AsyncStorage.mergeItem('formulas',JSON.stringify(object));
+    }
+  }
+
   render() {
     async () => {
       const value = await AsyncStorage.getItem('formulas');
@@ -257,25 +269,20 @@ export default class App extends React.Component {
     }
   }
   _pressEnter = async () => {
-    let object = {
-      'count': 0,
-      'name': this.state.addName,
-      'text': this.state.addText
-    };
-    let countobject = {
-      'count' : this.state.formulasCount
-    };
+
+    let addobject = {'name': this.state.addName, 'text': this.state.addText};
 
     try{
-      await AsyncStorage.setItem('formulas',JSON.stringify(object));
       this.setState({
         formulasCount: this.state.formulasCount+1
       });
-      await AsyncStorage.mergeItem('formulas', JSON.stringify(countobject));
 
       const value = await AsyncStorage.getItem('formulas');
       const data = JSON.parse(value);
-      const count = this.state.formulasCount;
+      data.formulas.push(addobject);
+      await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
+
+      const count = this.state.formulasCount - 1;
 
       this.state.Formulas.push(
         <TouchableOpacity style={{flex:1}}
@@ -283,7 +290,7 @@ export default class App extends React.Component {
           key={count}
         >
           <Text style={{fontSize:20, width:'95%'}}>
-            {data.name}:{data.text}
+            {data.formulas[count].name}:{data.formulas[count].text}
           </Text>
         </TouchableOpacity>
       );
