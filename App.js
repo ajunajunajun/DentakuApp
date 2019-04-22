@@ -22,6 +22,27 @@ export default class App extends React.Component {
     };
   }
   render() {
+    async () => {
+      const value = await AsyncStorage.getItem('formulas');
+      const data = JSON.parse(value);
+
+      const count = data.count;
+      this.setState({formulasCount:count});
+
+      for( i = 0; i < this.state.formulasCount; i++){
+        this.state.Formulas.push(
+          <TouchableOpacity style={{flex:1}}
+            onPress={() => alert(count)}
+            key={count}
+          >
+            <Text style={{fontSize:20, width:'95%'}}>
+              {data.name}:{data.text}
+            </Text>
+          </TouchableOpacity>
+        );
+      }
+    }
+
     var NumButtons789 = [];
     var NumButtons456 = [];
     var NumButtons123 = [];
@@ -236,23 +257,33 @@ export default class App extends React.Component {
     }
   }
   _pressEnter = async () => {
-    let object = {formulas:{'name': this.state.addName, 'text': this.state.addText}};
+    let object = {
+      'count': 0,
+      'name': this.state.addName,
+      'text': this.state.addText
+    };
+    let countobject = {
+      'count' : this.state.formulasCount
+    };
+
     try{
       await AsyncStorage.setItem('formulas',JSON.stringify(object));
+      this.setState({
+        formulasCount: this.state.formulasCount+1
+      });
+      await AsyncStorage.mergeItem('formulas', JSON.stringify(countobject));
+
       const value = await AsyncStorage.getItem('formulas');
-      //仮count いずれStorageにいれなきゃ
-      //はじめに全部ロードかかなきゃ、ここじゃだめ
-      //というかlengthで全部を取得って形にしなきゃ
-      //さっさとvalue.nameみたいな感じで一つづつ取得する書き方しらべて
-      this.setState({formulasCount:this.state.formulasCount+1});
+      const data = JSON.parse(value);
       const count = this.state.formulasCount;
+
       this.state.Formulas.push(
         <TouchableOpacity style={{flex:1}}
           onPress={() => alert(count)}
-          key={this.state.formulasCount}
+          key={count}
         >
           <Text style={{fontSize:20, width:'95%'}}>
-            {value}
+            {data.name}:{data.text}
           </Text>
         </TouchableOpacity>
       );
