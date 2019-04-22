@@ -18,38 +18,13 @@ export default class App extends React.Component {
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow',
       addName: 'name', addText: 'a + b * 2 = ',
+      delFlag:false, delColor:'yellow',
       Formulas:[], formulasCount: 0
     };
   }
 
   componentWillMount(){
-    let object = {
-      'count': this.state.formulasCount,
-      'formulas': [
-      ],
-    };
-    async () => {
-      await AsyncStorage.mergeItem('formulas',JSON.stringify(object));
-
-      const value = await AsyncStorage.getItem('formulas');
-      const data = JSON.parse(value);
-
-      const count = data.count;
-      this.setState({formulasCount:count});
-
-      for( i = 0; i < this.state.formulasCount; i++){
-        this.state.Formulas.push(
-          <TouchableOpacity style={{flex:1}}
-            onPress={() => alert(count)}
-            key={count}
-          >
-            <Text style={{fontSize:20, width:'95%'}}>
-              {data.name}:{data.text}
-            </Text>
-          </TouchableOpacity>
-        );
-      }
-    }
+    this._init();
   }
 
   render() {
@@ -138,8 +113,8 @@ export default class App extends React.Component {
             >
               <Text style={styles.buttonText}>add</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.Button,{backgroundColor: 'yellow'}]}
-              onPress={ this._c }
+            <TouchableOpacity style={[styles.Button,{backgroundColor:this.state.delColor}]}
+              onPress={ this._openDel }
             >
               <Text style={styles.buttonText}>del</Text>
             </TouchableOpacity>
@@ -212,6 +187,39 @@ export default class App extends React.Component {
     );
   }
 
+  _init = async() => {
+    let object = {
+      'count': this.state.formulasCount,
+      'formulas': [
+      ],
+    };
+    try {
+      await AsyncStorage.mergeItem('formulas',JSON.stringify(object));
+
+      const value = await AsyncStorage.getItem('formulas');
+      const data = JSON.parse(value);
+
+      const count = data.count;
+      alert(count)
+      this.setState({formulasCount:count});
+
+      for( i = 0; i < this.state.formulasCount; i++){
+        this.state.Formulas.push(
+          <TouchableOpacity style={{flex:1}}
+            onPress={() => alert(count)}
+            key={count}
+          >
+            <Text style={{fontSize:20, width:'95%'}}>
+              {data.name}:{data.text}
+            </Text>
+          </TouchableOpacity>
+        );
+      }
+    } catch (err) {
+      alert('error');
+    }
+  }
+
   _AnimDisplay = () => {
     if( this.state.AnimFlag === true ){
       Animated.timing(this.state.AnimFlex,{
@@ -262,7 +270,11 @@ export default class App extends React.Component {
     } else {
       this.setState({
         addFlag:true,
-        addColor: 'gold'
+        addColor: 'gold',
+
+        delFlag:false,
+        delColor: 'yellow'
+
       });
     }
   }
@@ -298,7 +310,21 @@ export default class App extends React.Component {
     }
   }
   _openDel = () => {
+    if(this.state.delFlag === true){
+      this.setState({
+        delFlag:false,
+        delColor: 'yellow'
+      });
+    } else {
+      this.setState({
+        delFlag:true,
+        delColor: 'gold',
 
+        addFlag:false,
+        addColor: 'yellow'
+
+      });
+    }
   }
 
   _numSet00 = () => {
