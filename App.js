@@ -30,11 +30,7 @@ export default class App extends React.Component {
     };
     async () => {
       await AsyncStorage.mergeItem('formulas',JSON.stringify(object));
-    }
-  }
 
-  render() {
-    async () => {
       const value = await AsyncStorage.getItem('formulas');
       const data = JSON.parse(value);
 
@@ -54,7 +50,9 @@ export default class App extends React.Component {
         );
       }
     }
+  }
 
+  render() {
     var NumButtons789 = [];
     var NumButtons456 = [];
     var NumButtons123 = [];
@@ -298,6 +296,9 @@ export default class App extends React.Component {
     } catch (error) {
       alert('error');
     }
+  }
+  _openDel = () => {
+
   }
 
   _numSet00 = () => {
