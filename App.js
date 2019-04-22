@@ -200,7 +200,6 @@ export default class App extends React.Component {
       const data = JSON.parse(value);
 
       const count = data.count;
-      alert(count)
       this.setState({formulasCount:count});
 
       for( i = 0; i < this.state.formulasCount; i++){
@@ -210,7 +209,7 @@ export default class App extends React.Component {
             key={count}
           >
             <Text style={{fontSize:20, width:'95%'}}>
-              {data.name}:{data.text}
+              {data.formulas[count].name}:{data.formulas[count].text}
             </Text>
           </TouchableOpacity>
         );
@@ -293,7 +292,7 @@ export default class App extends React.Component {
       await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
 
       const count = this.state.formulasCount - 1;
-
+      // atarasii no wo ue ni tuika sitai
       this.state.Formulas.push(
         <TouchableOpacity style={{flex:1}}
           onPress={() => alert(count)}
