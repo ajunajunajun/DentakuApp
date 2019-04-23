@@ -87,19 +87,26 @@ export default class App extends React.Component {
           </View>
           :
           <View style={{flex:2,width:'100%'}}>
-            <Animated.View style={{flex:this.state.AnimFlex2}}/>
-            <TouchableOpacity style={{flex:1,width:'100%'}}
-              onPress={ this._AnimDisplay }
-            >
-              <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
-                <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
-              </Animated.View>
-            </TouchableOpacity>
-            <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
-              <ScrollView style={{flex:1, marginLeft:20}}>
-                {this.state.Formulas}
-              </ScrollView>
-            </Animated.View>
+            {this.state.delFlag ?
+              <View style={{flex:2,width:'100%'}}>
+              </View>
+            :
+              <View style={{flex:2,width:'100%'}}>
+                <Animated.View style={{flex:this.state.AnimFlex2}}/>
+                <TouchableOpacity style={{flex:1,width:'100%'}}
+                  onPress={ this._AnimDisplay }
+                >
+                  <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
+                    <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
+                  </Animated.View>
+                </TouchableOpacity>
+                <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
+                  <ScrollView style={{flex:1, marginLeft:20}}>
+                    {this.state.Formulas}
+                  </ScrollView>
+                </Animated.View>
+              </View>
+            }
           </View>
         }
         </View>
