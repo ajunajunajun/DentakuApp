@@ -23,7 +23,7 @@ export default class App extends React.Component {
       Formulas:[], formulasCount: 0,
       setFormulasNumber: '', setFormulasText: '',
       judgeVariable:[], setVariable:[],
-      setVarValue:'1'
+      setVarValue:[]
     };
   }
 
@@ -80,7 +80,6 @@ export default class App extends React.Component {
             <TextInput style={{fontSize:30, marginLeft:50,height:'60%',width:'90%'}}
               onChangeText={(addText) => this.setState({addText})}
               value={this.state.addText}
-              multiline
             />
             <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
               onPress={ this._pressEnter }
@@ -316,10 +315,8 @@ export default class App extends React.Component {
     let judgeFlag = false;
     const patternName = new RegExp('.');
     const patternText = new RegExp('^ *(([a-zA-Z] *|[0-9] *)+([-+*\/] +)?)*([a-zA-Z]|[0-9])+ += *$');
-    // 改行までで分割
-    // = が二つなら
-    // 変数 = 変数｜変数 変数 = 変数｜変数 演算子 変数 = 変数
-    //右の項の変数は一つで重複不可（a*b = b+1)
+    //100x の x だけを変数で処理したいので100 x って入力にさせたい
+    //あとおなじ変数名が複数出てきたら二つ目以降は無視したい
     judgeNameFlag = patternName.test(this.state.addName);
     judgeTextFlag = patternText.test(this.state.addText);
     if(judgeNameFlag == true && judgeTextFlag == true){
@@ -416,35 +413,35 @@ export default class App extends React.Component {
       try {
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
-        //変数数えてcount追加
-        //count分TextInputつくる
         this.setState({
           setFormulasFlag:true,
           setFormulasNumber:i,
           setFormulasText:data.formulas[i].text
         });
         const patternBlank = new RegExp(' +');
-        const patternVar = new RegExp('^[a-zA-Z]+$');
+        const patternVar = new RegExp('[a-zA-Z]+');
         this.state.judgeVariable = data.formulas[i].text.split(patternBlank);
-        alert(this.state.judgeVariable.length);
         for(j = this.state.judgeVariable.length-1; j >= 0 ; j--){
           judgeVariableFlag = patternVar.test(this.state.judgeVariable[j]);
           if(judgeVariableFlag == false){
             this.state.judgeVariable.splice(j,1);
           }
         }
-//        for(j = 0; j < this.state.judgeVariable.length ; j++){
-        var j = 0;
-        this.state.setVariable.push(
-          <View style={{flex:1, flexDirection:'row'}} key={j}>
-            <Text style={{fontSize:30, marginLeft:10}}>{this.state.judgeVariable[j]}:</Text>
-            <TextInput style={{fontSize:30, marginLeft:10}}
-              onChangeText={ setVarValue => this.setState({setVarValue})}
-              value={this.state.setVarValue}
-            />
-            //ぼたんにして確定で配列にいれる感じにしてみる
-          </View>
-        );
+        this.state.setVariable = [];
+        this.state.setVarValue = [];
+        for(j = 0; j < this.state.judgeVariable.length ; j++){
+          const store = j;
+          this.state.setVariable.push(
+            <View style={{flex:1, flexDirection:'row'}} key={j}>
+              <Text style={{fontSize:30, marginLeft:10}}>{this.state.judgeVariable[j]}:</Text>
+              <TextInput style={{fontSize:30, marginLeft:10}}
+                onChangeText={ text => this._valueChange(store,text) }
+                placeholder = 'value'
+              />
+            </View>
+          );
+          this.state.setVarValue.push('');
+        }
       } catch (err) {
         alert('error');
       }
@@ -452,7 +449,11 @@ export default class App extends React.Component {
     }
     this.setState({});
   }
-
+  _valueChange = (j,text) => {
+    var copy = this.state.setVarValue.slice();
+    copy[j] = text;
+    this.setState({setVarValue: copy});
+  }
   _numSet00 = () => {
     if(this.state.displayFlag == true){
       let str = this.state.display;
