@@ -21,7 +21,9 @@ export default class App extends React.Component {
       delFlag:false, delColor:'yellow',
       setFormulasFlag:false,
       Formulas:[], formulasCount: 0,
-      setFormulasName: '',setFormulasText: '',
+      setFormulasNumber: '', setFormulasText: '',
+      judgeVariable:[], setVariable:[],
+      setVarValue:'1'
     };
   }
 
@@ -101,12 +103,10 @@ export default class App extends React.Component {
                 <View style={styles.addDisplay}>
                   <Text style={{fontSize:50, marginLeft:10,marginTop:16}}>Set Mode</Text>
                   <ScrollView style={{flex:1, marginLeft:20}}>
-                    <Text style={{fontSize:25, width:'95%'}}>
-                      {this.state.setFormulasName}:
-                    </Text>
-                    <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
-                      {this.state.setFormulasText}
-                    </Text>
+                    {this.state.Formulas[this.state.setFormulasNumber]}
+                  </ScrollView>
+                  <ScrollView style={{flex:1, marginLeft:20}}>
+                    {this.state.setVariable}
                   </ScrollView>
                 </View>
               :
@@ -232,7 +232,7 @@ export default class App extends React.Component {
       this.setState({formulasCount:count});
 
       for( i = 0; i < this.state.formulasCount; i++){
-        this.state.Formulas.unshift(
+        this.state.Formulas.push(
           <TouchableOpacity style={{flex:1}}
             onPress={ () => this._setFormulas(i)}
             key={i}
@@ -315,7 +315,7 @@ export default class App extends React.Component {
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
     let judgeFlag = false;
     const patternName = new RegExp('.');
-    const patternText = new RegExp('^ *(([a-z] +|[0-9] *)+([-+*\/] +)?)*([a-z]|[0-9])+ += *$');
+    const patternText = new RegExp('^ *(([a-zA-Z] *|[0-9] *)+([-+*\/] +)?)*([a-zA-Z]|[0-9])+ += *$');
     // 改行までで分割
     // = が二つなら
     // 変数 = 変数｜変数 変数 = 変数｜変数 演算子 変数 = 変数
@@ -335,8 +335,7 @@ export default class App extends React.Component {
         await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
 
         const count = this.state.formulasCount - 1;
-        // atarasii no wo ue ni tuika sitai
-        this.state.Formulas.unshift(
+        this.state.Formulas.push(
           <TouchableOpacity style={{flex:1}}
             onPress={() => this._setFormulas(count)}
             key={count}
@@ -396,7 +395,7 @@ export default class App extends React.Component {
         const count = this.state.formulasCount;
         for( j = 0; j < this.state.formulasCount; j++){
           const store = j;
-          this.state.Formulas.unshift(
+          this.state.Formulas.push(
             <TouchableOpacity style={{flex:1}}
               onPress={ () => this._setFormulas(store) }
               key={store}
@@ -410,21 +409,48 @@ export default class App extends React.Component {
             </TouchableOpacity>
           );
         }
-      this.setState({});
       } catch (err) {
         alert('error');
       }
     } else {
-      //表示切替
-      this.setState({setFormulasFlag:true});
-      //変数へinputで代入
+      try {
+        const value = await AsyncStorage.getItem('formulas');
+        const data = JSON.parse(value);
+        //変数数えてcount追加
+        //count分TextInputつくる
+        this.setState({
+          setFormulasFlag:true,
+          setFormulasNumber:i,
+          setFormulasText:data.formulas[i].text
+        });
+        const patternBlank = new RegExp(' +');
+        const patternVar = new RegExp('^[a-zA-Z]+$');
+        this.state.judgeVariable = data.formulas[i].text.split(patternBlank);
+        alert(this.state.judgeVariable.length);
+        for(j = this.state.judgeVariable.length-1; j >= 0 ; j--){
+          judgeVariableFlag = patternVar.test(this.state.judgeVariable[j]);
+          if(judgeVariableFlag == false){
+            this.state.judgeVariable.splice(j,1);
+          }
+        }
+//        for(j = 0; j < this.state.judgeVariable.length ; j++){
+        var j = 0;
+        this.state.setVariable.push(
+          <View style={{flex:1, flexDirection:'row'}} key={j}>
+            <Text style={{fontSize:30, marginLeft:10}}>{this.state.judgeVariable[j]}:</Text>
+            <TextInput style={{fontSize:30, marginLeft:10}}
+              onChangeText={ setVarValue => this.setState({setVarValue})}
+              value={this.state.setVarValue}
+            />
+            //ぼたんにして確定で配列にいれる感じにしてみる
+          </View>
+        );
+      } catch (err) {
+        alert('error');
+      }
       //計算
-      //出力
-      this.setState({
-        setFormulasName:this.state.addName,
-        setFormulasText:this.state.addText
-      });
     }
+    this.setState({});
   }
 
   _numSet00 = () => {
