@@ -20,7 +20,8 @@ export default class App extends React.Component {
       addName: 'name', addText: 'a + b * 2 = ',
       delFlag:false, delColor:'yellow',
       setFormulasFlag:false,
-      Formulas:[], formulasCount: 0
+      Formulas:[], formulasCount: 0,
+      setFormulasName: '',setFormulasText: '',
     };
   }
 
@@ -96,19 +97,35 @@ export default class App extends React.Component {
               </View>
             :
               <View style={{flex:2, width:'100%'}}>
-                <Animated.View style={{flex:this.state.AnimFlex2}}/>
-                <TouchableOpacity style={{flex:1,width:'100%'}}
-                  onPress={ this._AnimDisplay }
-                >
-                  <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
-                    <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
-                  </Animated.View>
-                </TouchableOpacity>
-                <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
+              {this.state.setFormulasFlag ?
+                <View style={styles.addDisplay}>
+                  <Text style={{fontSize:50, marginLeft:10,marginTop:16}}>Set Mode</Text>
                   <ScrollView style={{flex:1, marginLeft:20}}>
-                    {this.state.Formulas}
+                    <Text style={{fontSize:25, width:'95%'}}>
+                      {this.state.setFormulasName}:
+                    </Text>
+                    <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+                      {this.state.setFormulasText}
+                    </Text>
                   </ScrollView>
-                </Animated.View>
+                </View>
+              :
+                <View style={{flex:2, width:'100%'}}>
+                  <Animated.View style={{flex:this.state.AnimFlex2}}/>
+                  <TouchableOpacity style={{flex:1,width:'100%'}}
+                    onPress={ this._AnimDisplay }
+                  >
+                    <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
+                      <Text style={{fontSize:50, marginLeft:10}}>{this.state.display}</Text>
+                    </Animated.View>
+                  </TouchableOpacity>
+                  <Animated.View style={[styles.animView,{flex: this.state.AnimFlex,borderTopLeftRadius: this.state.AnimRadius, borderTopRightRadius: this.state.AnimRadius}]}>
+                    <ScrollView style={{flex:1, marginLeft:20}}>
+                      {this.state.Formulas}
+                    </ScrollView>
+                  </Animated.View>
+                </View>
+              }
               </View>
             }
           </View>
@@ -273,7 +290,8 @@ export default class App extends React.Component {
         addFlag:false,
         addColor:'yellow',
         delFlag:false,
-        addColor:'yellow'
+        addColor:'yellow',
+        setFormulasFlag:false
       });
     }
   }
@@ -287,10 +305,9 @@ export default class App extends React.Component {
       this.setState({
         addFlag:true,
         addColor: 'gold',
-
         delFlag:false,
-        delColor: 'yellow'
-
+        delColor: 'yellow',
+        setFormulasFlag:false
       });
     }
   }
@@ -298,10 +315,6 @@ export default class App extends React.Component {
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
     let judgeFlag = false;
     const patternName = new RegExp('.');
-<<<<<<< HEAD
-=======
-    // とりあえず一行で作成
->>>>>>> 552344b46abf75da0b113be5b374d2bd52aa2d22
     const patternText = new RegExp('^ *(([a-z] +|[0-9] *)+([-+*\/] +)?)*([a-z]|[0-9])+ += *$');
     // 改行までで分割
     // = が二つなら
@@ -354,9 +367,9 @@ export default class App extends React.Component {
       this.setState({
         delFlag:true,
         delColor: 'gold',
-
         addFlag:false,
-        addColor: 'yellow'
+        addColor: 'yellow',
+        setFormulasFlag:false
       });
     }
   }
@@ -372,20 +385,15 @@ export default class App extends React.Component {
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
 
-        //i番目の要素を削除
         data.formulas.splice(i,1);
         data.count -= 1;
         await AsyncStorage.setItem('formulas',JSON.stringify(data));
 
-        //count-1
-        //Formulasを初期化
         this.setState({
           formulasCount:data.count,
           Formulas: []
         });
         const count = this.state.formulasCount;
-
-        //作り直す
         for( j = 0; j < this.state.formulasCount; j++){
           const store = j;
           this.state.Formulas.unshift(
@@ -407,15 +415,15 @@ export default class App extends React.Component {
         alert('error');
       }
     } else {
-      //入力時に規約違反をはじく
-      //演算子以外を変数として認識
       //表示切替
       this.setState({setFormulasFlag:true});
       //変数へinputで代入
       //計算
       //出力
-
-      alert(i);
+      this.setState({
+        setFormulasName:this.state.addName,
+        setFormulasText:this.state.addText
+      });
     }
   }
 
