@@ -298,6 +298,10 @@ export default class App extends React.Component {
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
     let judgeFlag = false;
     const patternName = new RegExp('.');
+<<<<<<< HEAD
+=======
+    // とりあえず一行で作成
+>>>>>>> 552344b46abf75da0b113be5b374d2bd52aa2d22
     const patternText = new RegExp('^ *(([a-z] +|[0-9] *)+([-+*\/] +)?)*([a-z]|[0-9])+ += *$');
     // 改行までで分割
     // = が二つなら
