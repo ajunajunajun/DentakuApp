@@ -88,7 +88,11 @@ export default class App extends React.Component {
           :
           <View style={{flex:2,width:'100%'}}>
             {this.state.delFlag ?
-              <View style={{flex:2,width:'100%'}}>
+              <View style={styles.addDisplay}>
+                <Text style={{fontSize:50, marginLeft:10}}>Del Mode</Text>
+                <ScrollView style={{flex:1, marginLeft:20}}>
+                  {this.state.Formulas}
+                </ScrollView>
               </View>
             :
               <View style={{flex:2,width:'100%'}}>
@@ -213,11 +217,11 @@ export default class App extends React.Component {
       for( i = 0; i < this.state.formulasCount; i++){
         this.state.Formulas.push(
           <TouchableOpacity style={{flex:1}}
-            onPress={() => alert(count)}
-            key={count}
+            onPress={ () => this._setFormulas(i)}
+            key={i}
           >
             <Text style={{fontSize:20, width:'95%'}}>
-              {data.formulas[count].name}:{data.formulas[count].text}
+              {data.formulas[i].name}:{data.formulas[i].text}
             </Text>
           </TouchableOpacity>
         );
@@ -264,6 +268,8 @@ export default class App extends React.Component {
         modeFlag:true,
         modeColor:'yellow',
         addFlag:false,
+        addColor:'yellow',
+        delFlag:false,
         addColor:'yellow'
       });
     }
@@ -295,6 +301,7 @@ export default class App extends React.Component {
       const value = await AsyncStorage.getItem('formulas');
       const data = JSON.parse(value);
       data.formulas.push(addobject);
+      data.count += 1;
       await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
 
       const count = this.state.formulasCount - 1;
@@ -330,10 +337,53 @@ export default class App extends React.Component {
       });
     }
   }
+  _setFormulas = async i => {
+    let object = {
+      'count': this.state.formulasCount,
+      'formulas': [
+      ],
+    };
+    if(this.state.delFlag === true){
+      //確認を表示
+      try {
+        const value = await AsyncStorage.getItem('formulas');
+        const data = JSON.parse(value);
 
-  _setFormulas = i => {
-    this.setState({setFormulasFlag:true});
-    alert(i);
+        //i番目の要素を削除
+        data.formulas.splice(i,1);
+        data.count -= 1;
+        await AsyncStorage.setItem('formulas',JSON.stringify(data));
+
+        //count-1
+        //Formulasを初期化
+        this.setState({
+          formulasCount:data.count,
+          Formulas: []
+        });
+        const count = this.state.formulasCount;
+
+        //作り直す
+        for( j = 0; j < this.state.formulasCount; j++){
+          const store = j;
+          this.state.Formulas.push(
+            <TouchableOpacity style={{flex:1}}
+              onPress={ () => this._setFormulas(store) }
+              key={store}
+            >
+              <Text style={{fontSize:20, width:'95%'}}>
+                {data.formulas[j].name}:{data.formulas[j].text}
+              </Text>
+            </TouchableOpacity>
+          );
+        }
+      this.setState({});
+      } catch (err) {
+        alert('error');
+      }
+    } else {
+      this.setState({setFormulasFlag:true});
+      alert(i);
+    }
   }
 
   _numSet00 = () => {
@@ -353,6 +403,7 @@ export default class App extends React.Component {
     });
   }
   _numSeto = () => {
+    // いい感じのつくって
     let str = this.state.display/10;
     this.setState({display:str});
   }
