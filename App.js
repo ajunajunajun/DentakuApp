@@ -69,12 +69,12 @@ export default class App extends React.Component {
         <View style={{flex:2,width:'100%'}}>
         { this.state.addFlag ?
           <View style={styles.addDisplay}>
-            <Text style={{fontSize:50, marginLeft:10}}>ADD Mode</Text>
-            <TextInput style={{fontSize:40, marginLeft:10,height:'10%',width:'90%'}}
+            <Text style={{fontSize:50, marginLeft:10,marginTop:10}}>ADD Mode</Text>
+            <TextInput style={{fontSize:30, marginLeft:10,height:'10%',width:'90%'}}
               onChangeText={(addName) => this.setState({addName})}
               value={this.state.addName}
             />
-            <TextInput style={{fontSize:30, marginLeft:10,height:'60%',width:'90%'}}
+            <TextInput style={{fontSize:30, marginLeft:50,height:'60%',width:'90%'}}
               onChangeText={(addText) => this.setState({addText})}
               value={this.state.addText}
               multiline
@@ -89,14 +89,13 @@ export default class App extends React.Component {
           <View style={{flex:2,width:'100%'}}>
             {this.state.delFlag ?
               <View style={styles.addDisplay}>
-                <Text style={{fontSize:50, marginLeft:10}}>Del Mode</Text>
+                <Text style={{fontSize:50, marginLeft:10,marginTop:16}}>DEL Mode</Text>
                 <ScrollView style={{flex:1, marginLeft:20}}>
                   {this.state.Formulas}
                 </ScrollView>
               </View>
             :
-              //でざいん調整して
-              <View style={{flex:2,width:'100%'}}>
+              <View style={{flex:2, width:'100%'}}>
                 <Animated.View style={{flex:this.state.AnimFlex2}}/>
                 <TouchableOpacity style={{flex:1,width:'100%'}}
                   onPress={ this._AnimDisplay }
@@ -216,14 +215,17 @@ export default class App extends React.Component {
       this.setState({formulasCount:count});
 
       for( i = 0; i < this.state.formulasCount; i++){
-        this.state.Formulas.push(
+        this.state.Formulas.unshift(
           <TouchableOpacity style={{flex:1}}
             onPress={ () => this._setFormulas(i)}
             key={i}
           >
-            <Text style={{fontSize:20, width:'95%'}}>
-              {data.formulas[i].name}:{data.formulas[i].text}
-            </Text>
+          <Text style={{fontSize:25, width:'95%'}}>
+            {data.formulas[i].name}:
+          </Text>
+          <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+            {data.formulas[i].text}
+          </Text>
           </TouchableOpacity>
         );
       }
@@ -307,13 +309,16 @@ export default class App extends React.Component {
 
       const count = this.state.formulasCount - 1;
       // atarasii no wo ue ni tuika sitai
-      this.state.Formulas.push(
+      this.state.Formulas.unshift(
         <TouchableOpacity style={{flex:1}}
           onPress={() => this._setFormulas(count)}
           key={count}
         >
-          <Text style={{fontSize:20, width:'95%'}}>
-            {data.formulas[count].name}:{data.formulas[count].text}
+          <Text style={{fontSize:25, width:'95%'}}>
+            {data.formulas[count].name}:
+          </Text>
+          <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+            {data.formulas[count].text}
           </Text>
         </TouchableOpacity>
       );
@@ -366,14 +371,17 @@ export default class App extends React.Component {
         //作り直す
         for( j = 0; j < this.state.formulasCount; j++){
           const store = j;
-          this.state.Formulas.push(
+          this.state.Formulas.unshift(
             <TouchableOpacity style={{flex:1}}
               onPress={ () => this._setFormulas(store) }
               key={store}
             >
-              <Text style={{fontSize:20, width:'95%'}}>
-                {data.formulas[j].name}:{data.formulas[j].text}
-              </Text>
+            <Text style={{fontSize:25, width:'95%'}}>
+              {data.formulas[j].name}:
+            </Text>
+            <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+              {data.formulas[j].text}
+            </Text>
             </TouchableOpacity>
           );
         }
