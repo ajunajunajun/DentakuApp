@@ -296,35 +296,48 @@ export default class App extends React.Component {
   }
   _pressEnter = async () => {
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
-    try{
-      this.setState({
-        formulasCount: this.state.formulasCount+1
-      });
+    let judgeFlag = false;
+    // 改行までで分割
+    // = が一つなら 最後の要素 =
+    // 変数 =｜変数 変数 =｜変数 演算子 変数 =
+    // = が二つなら
+    // 変数 = 変数｜変数 変数 = 変数｜変数 演算子 変数 = 変数
+    //右の項の変数は一つで重複不可（a*b = b+1)
+    //だいじょうぶなら
+    judgeFlag = true;
+    if(judgeFlag === true){
+      try{
+        this.setState({
+          formulasCount: this.state.formulasCount+1
+        });
 
-      const value = await AsyncStorage.getItem('formulas');
-      const data = JSON.parse(value);
-      data.formulas.push(addobject);
-      data.count += 1;
-      await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
+        const value = await AsyncStorage.getItem('formulas');
+        const data = JSON.parse(value);
+        data.formulas.push(addobject);
+        data.count += 1;
+        await AsyncStorage.mergeItem('formulas',JSON.stringify(data));
 
-      const count = this.state.formulasCount - 1;
-      // atarasii no wo ue ni tuika sitai
-      this.state.Formulas.unshift(
-        <TouchableOpacity style={{flex:1}}
-          onPress={() => this._setFormulas(count)}
-          key={count}
-        >
-          <Text style={{fontSize:25, width:'95%'}}>
-            {data.formulas[count].name}:
-          </Text>
-          <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
-            {data.formulas[count].text}
-          </Text>
-        </TouchableOpacity>
-      );
-      alert('success');
-    } catch (error) {
-      alert('error');
+        const count = this.state.formulasCount - 1;
+        // atarasii no wo ue ni tuika sitai
+        this.state.Formulas.unshift(
+          <TouchableOpacity style={{flex:1}}
+            onPress={() => this._setFormulas(count)}
+            key={count}
+          >
+            <Text style={{fontSize:25, width:'95%'}}>
+              {data.formulas[count].name}:
+            </Text>
+            <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+              {data.formulas[count].text}
+            </Text>
+          </TouchableOpacity>
+        );
+        alert('success');
+      } catch (error) {
+        alert('error');
+      }
+    } else {
+      alert('入力に違反があります');
     }
   }
   _openDel = () => {
@@ -390,7 +403,14 @@ export default class App extends React.Component {
         alert('error');
       }
     } else {
+      //入力時に規約違反をはじく
+      //演算子以外を変数として認識
+      //表示切替
       this.setState({setFormulasFlag:true});
+      //変数へinputで代入
+      //計算
+      //出力
+
       alert(i);
     }
   }
