@@ -297,15 +297,18 @@ export default class App extends React.Component {
   _pressEnter = async () => {
     let addobject = {'name': this.state.addName, 'text': this.state.addText};
     let judgeFlag = false;
+    const patternName = new RegExp('.');
+    // とりあえず一行で作成
+    const patternText = new RegExp('^ *(([a-z] +|[0-9] *)+([-+*\/] +)?)*([a-z]|[0-9])+ += *$');
     // 改行までで分割
     // = が一つなら 最後の要素 =
     // 変数 =｜変数 変数 =｜変数 演算子 変数 =
     // = が二つなら
     // 変数 = 変数｜変数 変数 = 変数｜変数 演算子 変数 = 変数
     //右の項の変数は一つで重複不可（a*b = b+1)
-    //だいじょうぶなら
-    judgeFlag = true;
-    if(judgeFlag === true){
+    judgeNameFlag = patternName.test(this.state.addName);
+    judgeTextFlag = patternText.test(this.state.addText);
+    if(judgeNameFlag == true && judgeTextFlag == true){
       try{
         this.setState({
           formulasCount: this.state.formulasCount+1
