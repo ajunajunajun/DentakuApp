@@ -95,6 +95,7 @@ export default class App extends React.Component {
                 </ScrollView>
               </View>
             :
+              //でざいん調整して
               <View style={{flex:2,width:'100%'}}>
                 <Animated.View style={{flex:this.state.AnimFlex2}}/>
                 <TouchableOpacity style={{flex:1,width:'100%'}}
