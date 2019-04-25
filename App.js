@@ -376,7 +376,7 @@ export default class App extends React.Component {
     }
 
 
-    const patternOperator1 = new RegExp('[-+*\/]');
+    const patternOperator1 = new RegExp('[*\/]');
     const patternOperator2 = new RegExp('[-+]');
 
     var operatorstr = '';
@@ -384,36 +384,38 @@ export default class App extends React.Component {
     var str1;
     var str2;
 
-    for(i = 0, operator= -1; i < this.state.setVariableStore.length || operator >= 0 ; i++){
+    for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
       if(patternOperator1.test(this.state.setVariableStore[i]) == true){
         operator = i;
+        break;
       }
     }
-
     while(operator != -1){
       operatorstr = this.state.setVariableStore[operator];
       str1 = this.state.setVariableStore[operator-1];
       str2 = this.state.setVariableStore[operator+1];
       switch (operatorstr) {
         case '*':
-          str = str1 * str2;
+          str = Number(str1) * Number(str2);
           break;
         case '/':
-          str = str1 / str2;
+          str = Number(str1) / Number(str2);
           break;
       }
       this.state.setVariableStore[operator-1] = str;
       this.state.setVariableStore.splice(operator,2);
-      for(i = 0, operator= -1; i < this.state.setVariableStore.length || operator >= 0 ; i++){
+      for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
         if(patternOperator1.test(this.state.setVariableStore[i]) == true){
           operator = i;
+          break;
         }
       }
     };
 
-    for(i = 0, operator= -1; i < this.state.setVariableStore.length || operator >= 0 ; i++){
+    for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
       if(patternOperator2.test(this.state.setVariableStore[i]) == true){
         operator = i;
+        break;
       }
     }
     while(operator != -1){
@@ -422,29 +424,23 @@ export default class App extends React.Component {
       str2 = this.state.setVariableStore[operator+1];
       switch (operatorstr) {
         case '+':
-          str = str1 * str2;
+          str = Number(str1) + Number(str2);
           break;
         case '-':
-          str = str1 / str2;
+          str = Number(str1) - Number(str2);
           break;
       }
       this.state.setVariableStore[operator-1] = str;
       this.state.setVariableStore.splice(operator,2);
-      for(i = 0, operator= -1; i < this.state.setVariableStore.length || operator >= 0 ; i++){
+      for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
         if(patternOperator2.test(this.state.setVariableStore[i]) == true){
           operator = i;
+          break;
         }
       }
     };
-
-    alert(this.state.setVariableStore);
-    //数値以外の番地を出して
-    //優先度高い *,/ の　周り-1,+1を取り出して計算、使った符号削除
-    //+,-の計算
-    //= で出力
-
     this.setState({setFormulasFlag:false});
-    alert(this.state.setVariableStore);
+    alert(this.state.setVariableStore[0]);
   }
   _openDel = () => {
     if(this.state.delFlag === true){
