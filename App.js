@@ -23,7 +23,8 @@ export default class App extends React.Component {
       Formulas:[], formulasCount: 0,
       setFormulasNumber: '', setFormulasText: '',
       judgeVariable:[], setVariable:[],
-      setVarValue:[]
+      setVarValue:[],
+      setVariableStore:[], setVariableCount:[],
     };
   }
 
@@ -107,6 +108,11 @@ export default class App extends React.Component {
                   <ScrollView style={{flex:1, marginLeft:20}}>
                     {this.state.setVariable}
                   </ScrollView>
+                  <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
+                    onPress={ this._pressEnterSet }
+                  >
+                    <Text style={styles.buttonText}>Enter</Text>
+                  </TouchableOpacity>
                 </View>
               :
                 <View style={{flex:2, width:'100%'}}>
@@ -249,7 +255,6 @@ export default class App extends React.Component {
       alert('error');
     }
   }
-
   _AnimDisplay = () => {
     if( this.state.setFormulasFlag == true || this.state.addFlag == true || this.state.delFlag == true ){
       this.setState({
@@ -361,6 +366,19 @@ export default class App extends React.Component {
       alert('入力に違反があります');
     }
   }
+  _pressEnterSet = () => {
+    for(i = 0; i < this.state.setVariableCount.length; i++){
+      this.state.setVariableStore[this.state.setVariableCount[i]] = this.state.setVarValue[i];
+    }
+    this.setState({});
+    alert(this.state.setVariableStore);
+    //数式
+    //this.state.setVariableStore;
+    //何番地に変数があるか
+    //this.state.setVariableCount;
+    //変数の中身 0,1,2~
+    //this.state.setVarValue;
+  }
   _openDel = () => {
     if(this.state.delFlag === true){
       this.setState({
@@ -428,12 +446,17 @@ export default class App extends React.Component {
         });
         const patternBlank = new RegExp(' +');
         const patternVar = new RegExp('[a-zA-Z]+');
+        this.state.setVariableStore = data.formulas[i].text.split(patternBlank);
         this.state.judgeVariable = data.formulas[i].text.split(patternBlank);
+        this.state.setVariableCount = [];
         for(j = this.state.judgeVariable.length-1; j >= 0 ; j--){
           judgeVariableFlag = patternVar.test(this.state.judgeVariable[j]);
           if(judgeVariableFlag == false){
             this.state.judgeVariable.splice(j,1);
+          } else {
+            this.state.setVariableCount.unshift(j);
           }
+
         }
         this.state.setVariable = [];
         this.state.setVarValue = [];
@@ -453,7 +476,6 @@ export default class App extends React.Component {
       } catch (err) {
         alert('error');
       }
-      //計算
     }
     this.setState({});
   }
