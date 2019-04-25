@@ -374,7 +374,6 @@ export default class App extends React.Component {
     for(i = 0; i < this.state.setVariableCount.length; i++){
       this.state.setVariableStore[this.state.setVariableCount[i]] = this.state.setVarValue[i];
     }
-
     const patternVar = new RegExp('[0-9]+');
     for(i = 1; i < this.state.setVariableStore.length-1; i++){
       if(patternVar.test(this.state.setVariableStore[i-1]) == patternVar.test(this.state.setVariableStore[i])){
@@ -443,7 +442,14 @@ export default class App extends React.Component {
       }
     };
     this.setState({setFormulasFlag:false});
-    alert(this.state.setVariableStore[0]);
+    alert('answer: '+ this.state.setVariableStore[0]);
+    this.setState({
+      strmath: this.state.setVariableStore[0],
+      display: this.state.setVariableStore[0],
+      operator: '',
+      displayFlag: true,
+      operatorFlag: true
+    });
   }
   _openDel = () => {
     if(this.state.delFlag === true){
