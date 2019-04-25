@@ -251,7 +251,15 @@ export default class App extends React.Component {
   }
 
   _AnimDisplay = () => {
-    if( this.state.AnimFlag === true ){
+    if( this.state.setFormulasFlag == true || this.state.addFlag == true || this.state.delFlag == true ){
+      this.setState({
+        setFormulasFlag:false,
+        addFlag:false,
+        delFlag:false,
+        addColor:'yellow',
+        delColor:'yellow'
+      });
+    } else if( this.state.AnimFlag === true ){
       Animated.timing(this.state.AnimFlex,{
         toValue: 1,
         duration: 300,
@@ -289,7 +297,7 @@ export default class App extends React.Component {
         addFlag:false,
         addColor:'yellow',
         delFlag:false,
-        addColor:'yellow',
+        delColor:'yellow',
         setFormulasFlag:false
       });
     }
