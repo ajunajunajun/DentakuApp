@@ -328,7 +328,6 @@ export default class App extends React.Component {
     let judgeFlag = false;
     const patternName = new RegExp('.');
     const patternText = new RegExp('^ *(([a-zA-Z] *|[0-9] *)+([-+*\/] +)?)*([a-zA-Z]|[0-9])+ += *$');
-    //100x の x だけを変数で処理したいので100 x って入力にさせたい
     //あとおなじ変数名が複数出てきたら二つ目以降は無視したい
     judgeNameFlag = patternName.test(this.state.addName);
     judgeTextFlag = patternText.test(this.state.addText);
@@ -442,6 +441,7 @@ export default class App extends React.Component {
       }
     };
     this.setState({setFormulasFlag:false});
+    //alertいい感じに
     alert('answer: '+ this.state.setVariableStore[0]);
     this.setState({
       strmath: this.state.setVariableStore[0],
@@ -509,6 +509,7 @@ export default class App extends React.Component {
       }
     } else {
       try {
+        //同じ変数はひとつに
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
         this.setState({
