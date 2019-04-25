@@ -375,15 +375,18 @@ export default class App extends React.Component {
       this.state.setVariableStore[this.state.setVariableCount[i]] = this.state.setVarValue[i];
     }
 
+    const patternVar = new RegExp('[0-9]+');
+    for(i = 1; i < this.state.setVariableStore.length-1; i++){
+      if(patternVar.test(this.state.setVariableStore[i-1]) == patternVar.test(this.state.setVariableStore[i])){
+        this.state.setVariableStore.splice(i,0,'*');
+        i++;
+      }
+    }
 
     const patternOperator1 = new RegExp('[*\/]');
     const patternOperator2 = new RegExp('[-+]');
 
     var operatorstr = '';
-    var str;
-    var str1;
-    var str2;
-
     for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
       if(patternOperator1.test(this.state.setVariableStore[i]) == true){
         operator = i;
