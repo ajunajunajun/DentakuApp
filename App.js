@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity, Animated, ScrollView, TextInput, AsyncStorage
+  StyleSheet, Text, View, Alert, TouchableOpacity, Animated, ScrollView, TextInput, AsyncStorage
 } from 'react-native';
 
 export default class App extends React.Component {
@@ -14,10 +14,10 @@ export default class App extends React.Component {
       operatorFlag: false,
       AnimFlex: new Animated.Value(0), AnimFlag: true,
       AnimFlex2: new Animated.Value(1),
-      AnimRadius: new Animated.Value(30),
+      AnimRadius: new Animated.Value(15),
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow',
-      addName: 'name', addText: 'a + b * 2 = ',
+      addName: 'name', addText: 'a + 2 b / 2 = ',
       setFlag:true, setColor:'gold',
       delFlag:false, delColor:'yellow',
       setFormulasFlag:false,
@@ -75,16 +75,16 @@ export default class App extends React.Component {
         { this.state.addFlag ?
           <View style={styles.addDisplay}>
             <View style={{flex:0.6,borderBottomWidth:1,borderColor:'black'}}>
-              <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>ADD Mode</Text>
+              <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>ADD MODE</Text>
             </View>
             <View style={{flex:1}}>
               <TextInput style={{fontSize:30, marginLeft:10,marginTop:10,width:'90%'}}
                 onChangeText={(addName) => this.setState({addName})}
-                value={this.state.addName}
+                placeholder = 'name'
               />
               <TextInput style={{fontSize:30, marginLeft:45,marginTop:20,width:'80%'}}
                 onChangeText={(addText) => this.setState({addText})}
-                value={this.state.addText}
+                placeholder = 'a + 2 b / 2 = '
               />
             </View>
             <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
@@ -98,7 +98,7 @@ export default class App extends React.Component {
             {this.state.delFlag ?
               <View style={styles.addDisplay}>
                 <View style={{flex:0.6,width:'100%',borderBottomWidth:1,borderColor:'black'}}>
-                  <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>DEL Mode</Text>
+                  <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>DEL MODE</Text>
                 </View>
                 <ScrollView style={{flex:1, marginLeft:20}}>
                   {this.state.Formulas}
@@ -243,11 +243,8 @@ export default class App extends React.Component {
     );
   }
 
-  //animdisplayボタンにいい感じの文字入れる
-  //formulas一覧を下にスクロールしたら枠拡大
-  //formulas一覧のwidthを減らす（right)(3tu)
   //asyncstorageのテスト
-  //ADD SET DELってボタン配置にしたいのでset追加
+  //addmode に infoボタン右上に配置して正規表現説明追加
 
   _init = async() => {
     let object = {
@@ -284,17 +281,7 @@ export default class App extends React.Component {
     }
   }
   _AnimDisplay = () => {
-    if( this.state.setFormulasFlag == true || this.state.addFlag == true || this.state.delFlag == true ){
-      this.setState({
-        setFormulasFlag:false,
-        addFlag:false,
-        delFlag:false,
-        addColor:'yellow',
-        delColor:'yellow',
-        setFlag:true,
-        setColor: 'gold'
-      });
-    } else if( this.state.AnimFlag === true ){
+    if( this.state.AnimFlag === true ){
       Animated.timing(this.state.AnimFlex,{
         toValue: 1,
         duration: 300,
@@ -322,7 +309,7 @@ export default class App extends React.Component {
         duration: 300,
       }).start();
       Animated.timing(this.state.AnimRadius,{
-        toValue: 30,
+        toValue: 15,
         duration: 1000,
       }).start();
       this.setState({
@@ -333,6 +320,8 @@ export default class App extends React.Component {
         addColor:'yellow',
         delFlag:false,
         delColor:'yellow',
+        setFlag:true,
+        setColor:'gold',
         setFormulasFlag:false
       });
     }
@@ -406,12 +395,16 @@ export default class App extends React.Component {
             </Text>
           </TouchableOpacity>
         );
-        alert('success');
+        Alert.alert("success",'LISTに追加しました');
+        this.setState({
+          addName: 'name',
+          addText: 'a + 2 b / 2 = ',
+        });
       } catch (error) {
         alert('error');
       }
     } else {
-      alert('入力に違反があります');
+      Alert.alert("error",'入力に問題があります');
     }
   }
   _pressEnterSet = () => {
@@ -424,6 +417,11 @@ export default class App extends React.Component {
         this.state.setVariableStore.splice(i,0,'*');
         i++;
       }
+    }
+
+    var ans = [];
+    for(i = 0; this.state.setVariableStore[i] != '='; i++){
+      ans[i] = this.state.setVariableStore[i];
     }
 
     const patternOperator1 = new RegExp('[*\/]');
@@ -487,8 +485,8 @@ export default class App extends React.Component {
       }
     };
     this.setState({setFormulasFlag:false});
-    //alertいい感じに
-    alert('answer: '+ this.state.setVariableStore[0]);
+
+    Alert.alert("RESULT",ans.join(' ') + '\n = ' + this.state.setVariableStore[0]);
     this.setState({
       strmath: this.state.setVariableStore[0],
       display: this.state.setVariableStore[0],
@@ -524,39 +522,15 @@ export default class App extends React.Component {
       ],
     };
     if(this.state.delFlag === true){
-      //確認を表示
-      try {
-        const value = await AsyncStorage.getItem('formulas');
-        const data = JSON.parse(value);
+      const value = await AsyncStorage.getItem('formulas');
+      const data = JSON.parse(value);
 
-        data.formulas.splice(i,1);
-        data.count -= 1;
-        await AsyncStorage.setItem('formulas',JSON.stringify(data));
-
-        this.setState({
-          formulasCount:data.count,
-          Formulas: []
-        });
-        const count = this.state.formulasCount;
-        for( j = 0; j < this.state.formulasCount; j++){
-          const store = j;
-          this.state.Formulas.push(
-            <TouchableOpacity style={{flex:1}}
-              onPress={ () => this._setFormulas(store) }
-              key={store}
-            >
-            <Text style={{fontSize:25, width:'95%'}}>
-              {data.formulas[j].name}:
-            </Text>
-            <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
-              {data.formulas[j].text}
-            </Text>
-            </TouchableOpacity>
-          );
-        }
-      } catch (err) {
-        alert('error');
-      }
+      Alert.alert('DELETE',data.formulas[i].name +'\n' + data.formulas[i].text + '\nを消去しますか？',[
+        {text:'CANCEL', onPress: this._setCancelFlag, style:'cancel' },
+        {text:'DELETE', onPress: () => this._setDeleteFlag(i), style:'destructive' }
+      ],
+      { cancelable: false }
+      );
     } else {
       try {
         //同じ変数はひとつに
@@ -594,6 +568,7 @@ export default class App extends React.Component {
               <TextInput style={{fontSize:30, marginLeft:10}}
                 onChangeText={ text => this._valueChange(store,text) }
                 placeholder = 'value'
+                keyboardType = 'decimal-pad'
               />
             </View>
           );
@@ -609,6 +584,39 @@ export default class App extends React.Component {
     var copy = this.state.setVarValue.slice();
     copy[j] = text;
     this.setState({setVarValue: copy});
+  }
+  _setDeleteFlag = async (i) => {
+    const value = await AsyncStorage.getItem('formulas');
+    const data = JSON.parse(value);
+
+    data.formulas.splice(i,1);
+    data.count -= 1;
+    await AsyncStorage.setItem('formulas',JSON.stringify(data));
+
+    this.setState({
+      formulasCount:data.count,
+      Formulas: []
+    });
+    const count = this.state.formulasCount;
+    for( j = 0; j < this.state.formulasCount; j++){
+      const store = j;
+      this.state.Formulas.push(
+        <TouchableOpacity style={{flex:1}}
+          onPress={ () => this._setFormulas(store) }
+          key={store}
+        >
+        <Text style={{fontSize:25, width:'95%'}}>
+          {data.formulas[j].name}:
+        </Text>
+        <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+          {data.formulas[j].text}
+        </Text>
+        </TouchableOpacity>
+      );
+    }
+    this.setState({});
+  }
+  _setCancelFlag = () => {
   }
   _numSet00 = () => {
     if(this.state.displayFlag == true){
@@ -742,8 +750,8 @@ const styles = StyleSheet.create({
     width:'100%',
     backgroundColor: 'snow',
     justifyContent: 'center',
-    borderTopLeftRadius:30,
-    borderTopRightRadius:30,
+    borderTopLeftRadius:15,
+    borderTopRightRadius:15,
   },
   addDisplay: {
     flex:2,
@@ -751,13 +759,13 @@ const styles = StyleSheet.create({
     width:'100%',
     backgroundColor: 'snow',
     justifyContent: 'center',
-    borderRadius:30,
+    borderRadius:15,
   },
   animView: {
     width:'100%',
     backgroundColor: 'snow',
-    borderBottomLeftRadius:30,
-    borderBottomRightRadius:30,
+    borderBottomLeftRadius:15,
+    borderBottomRightRadius:15,
   },
   viewButton: {
     flex:1,
@@ -771,7 +779,9 @@ const styles = StyleSheet.create({
     width:'100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius:30,
+    borderRadius:15,
+    borderWidth:0.5,
+    borderColor:'black'
   },
   enterButton: {
     position: 'absolute',
@@ -779,7 +789,9 @@ const styles = StyleSheet.create({
     width:'20%',
     right: 10,
     bottom:10,
-    borderRadius:30,
+    borderRadius:15,
+    borderWidth:1,
+    borderColor:'black',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -787,10 +799,12 @@ const styles = StyleSheet.create({
     flex: 2,
     height:'100%',
     width:'100%',
-    borderRadius:30,
+    borderRadius:15,
+    borderWidth:0.5,
+    borderColor:'black'
   },
   buttonText: {
-    fontSize: 30,
+    fontSize: 25,
     textAlign: 'center',
     width:'100%'
   },
