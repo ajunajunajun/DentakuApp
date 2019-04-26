@@ -18,6 +18,7 @@ export default class App extends React.Component {
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow',
       addName: 'name', addText: 'a + b * 2 = ',
+      setFlag:true, setColor:'gold',
       delFlag:false, delColor:'yellow',
       setFormulasFlag:false,
       Formulas:[], formulasCount: 0,
@@ -73,15 +74,19 @@ export default class App extends React.Component {
         <View style={{flex:2,width:'100%'}}>
         { this.state.addFlag ?
           <View style={styles.addDisplay}>
-            <Text style={{fontSize:50, marginLeft:10,marginTop:10}}>ADD Mode</Text>
-            <TextInput style={{fontSize:30, marginLeft:10,height:'10%',width:'90%'}}
-              onChangeText={(addName) => this.setState({addName})}
-              value={this.state.addName}
-            />
-            <TextInput style={{fontSize:30, marginLeft:50,height:'60%',width:'90%'}}
-              onChangeText={(addText) => this.setState({addText})}
-              value={this.state.addText}
-            />
+            <View style={{flex:0.6,borderBottomWidth:1,borderColor:'black'}}>
+              <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>ADD Mode</Text>
+            </View>
+            <View style={{flex:1}}>
+              <TextInput style={{fontSize:30, marginLeft:10,marginTop:10,width:'90%'}}
+                onChangeText={(addName) => this.setState({addName})}
+                value={this.state.addName}
+              />
+              <TextInput style={{fontSize:30, marginLeft:45,marginTop:20,width:'80%'}}
+                onChangeText={(addText) => this.setState({addText})}
+                value={this.state.addText}
+              />
+            </View>
             <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
               onPress={ this._pressEnter }
             >
@@ -92,7 +97,9 @@ export default class App extends React.Component {
           <View style={{flex:2,width:'100%'}}>
             {this.state.delFlag ?
               <View style={styles.addDisplay}>
-                <Text style={{fontSize:50, marginLeft:10,marginTop:16}}>DEL Mode</Text>
+                <View style={{flex:0.6,width:'100%',borderBottomWidth:1,borderColor:'black'}}>
+                  <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>DEL Mode</Text>
+                </View>
                 <ScrollView style={{flex:1, marginLeft:20}}>
                   {this.state.Formulas}
                 </ScrollView>
@@ -101,13 +108,17 @@ export default class App extends React.Component {
               <View style={{flex:2, width:'100%'}}>
               {this.state.setFormulasFlag ?
                 <View style={styles.addDisplay}>
-                  <Text style={{fontSize:50, marginLeft:10,marginTop:16}}>Set Mode</Text>
-                  <ScrollView style={{flex:1, marginLeft:20}}>
-                    {this.state.Formulas[this.state.setFormulasNumber]}
-                  </ScrollView>
-                  <ScrollView style={{flex:1, marginLeft:20}}>
-                    {this.state.setVariable}
-                  </ScrollView>
+                  <View style={{flex:0.6,width:'100%',borderBottomWidth:1,borderColor:'black'}}>
+                    <Text style={{fontSize:50, marginLeft:10,marginTop:20}}>SET MODE</Text>
+                  </View>
+                  <View style={{flex:1}}>
+                    <ScrollView style={{flex:0.3, marginLeft:20,height:'50%'}}>
+                      {this.state.Formulas[this.state.setFormulasNumber]}
+                    </ScrollView>
+                    <ScrollView style={{flex:0.7, marginLeft:20,width:'70%'}}>
+                      {this.state.setVariable}
+                    </ScrollView>
+                  </View>
                   <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
                     onPress={ this._pressEnterSet }
                   >
@@ -117,7 +128,7 @@ export default class App extends React.Component {
               :
                 <View style={{flex:2, width:'100%'}}>
                   <Animated.View style={{flex:this.state.AnimFlex2}}/>
-                  <TouchableOpacity style={{flex:1,width:'100%'}}
+                  <TouchableOpacity style={{flex:0.6,width:'100%',borderBottomWidth:1,borderColor:'black'}}
                     onPress={ this._AnimDisplay }
                   >
                     <Animated.View style={[styles.display,{borderBottomLeftRadius: this.state.AnimRadius, borderBottomRightRadius: this.state.AnimRadius}]}>
@@ -145,12 +156,17 @@ export default class App extends React.Component {
             <TouchableOpacity style={[styles.Button,{backgroundColor:this.state.addColor}]}
               onPress={ this._openAdd }
             >
-              <Text style={styles.buttonText}>add</Text>
+              <Text style={styles.buttonText}>ADD</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.Button,{backgroundColor:this.state.setColor}]}
+              onPress={ this._openSet }
+            >
+              <Text style={styles.buttonText}>LIST</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.Button,{backgroundColor:this.state.delColor}]}
               onPress={ this._openDel }
             >
-              <Text style={styles.buttonText}>del</Text>
+              <Text style={styles.buttonText}>DEL</Text>
             </TouchableOpacity>
           </View>
         }
@@ -167,7 +183,13 @@ export default class App extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.Button,{backgroundColor: this.state.modeColor}]}
             onPress={ this._AnimDisplay }
-          />
+          >
+          {this.state.modeFlag ?
+            <Text style={styles.buttonText}>OPEN</Text>
+          :
+            <Text style={styles.buttonText}>CLOSE</Text>
+          }
+          </TouchableOpacity>
           <TouchableOpacity style={[styles.Button,{backgroundColor: 'orange'}]}
             onPress={ () => this._Arithmetic('/') }
           >
@@ -221,6 +243,12 @@ export default class App extends React.Component {
     );
   }
 
+  //animdisplayボタンにいい感じの文字入れる
+  //formulas一覧を下にスクロールしたら枠拡大
+  //formulas一覧のwidthを減らす（right)(3tu)
+  //asyncstorageのテスト
+  //ADD SET DELってボタン配置にしたいのでset追加
+
   _init = async() => {
     let object = {
       'count': this.state.formulasCount,
@@ -262,7 +290,9 @@ export default class App extends React.Component {
         addFlag:false,
         delFlag:false,
         addColor:'yellow',
-        delColor:'yellow'
+        delColor:'yellow',
+        setFlag:true,
+        setColor: 'gold'
       });
     } else if( this.state.AnimFlag === true ){
       Animated.timing(this.state.AnimFlex,{
@@ -311,7 +341,8 @@ export default class App extends React.Component {
     if(this.state.addFlag === true){
       this.setState({
         addFlag:false,
-        addColor: 'yellow'
+        addColor: 'yellow',
+        setColor: 'gold'
       });
     } else {
       this.setState({
@@ -319,6 +350,25 @@ export default class App extends React.Component {
         addColor: 'gold',
         delFlag:false,
         delColor: 'yellow',
+        setFlag:false,
+        setColor: 'yellow',
+        setFormulasFlag:false
+      });
+    }
+  }
+  _openSet = () => {
+    if(this.state.setFlag === true){
+      this.setState({
+        setFormulasFlag:false,
+      });
+    } else {
+      this.setState({
+        addFlag:false,
+        addColor: 'yellow',
+        delFlag:false,
+        delColor: 'yellow',
+        setFlag:true,
+        setColor: 'gold',
         setFormulasFlag:false
       });
     }
@@ -328,7 +378,6 @@ export default class App extends React.Component {
     let judgeFlag = false;
     const patternName = new RegExp('.');
     const patternText = new RegExp('^ *(([a-zA-Z] *|[0-9] *)+([-+*\/] +)?)*([a-zA-Z]|[0-9])+ += *$');
-    //あとおなじ変数名が複数出てきたら二つ目以降は無視したい
     judgeNameFlag = patternName.test(this.state.addName);
     judgeTextFlag = patternText.test(this.state.addText);
     if(judgeNameFlag == true && judgeTextFlag == true){
@@ -349,18 +398,14 @@ export default class App extends React.Component {
             onPress={() => this._setFormulas(count)}
             key={count}
           >
-            <Text style={{fontSize:25, width:'95%'}}>
+            <Text style={{fontSize:25, width:'90%'}}>
               {data.formulas[count].name}:
             </Text>
-            <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
+            <Text style={{fontSize:25, width:'80%', marginLeft:40}}>
               {data.formulas[count].text}
             </Text>
           </TouchableOpacity>
         );
-        this.setState({
-          addFlag:false,
-          addColor:'yellow'
-        })
         alert('success');
       } catch (error) {
         alert('error');
@@ -391,6 +436,7 @@ export default class App extends React.Component {
         break;
       }
     }
+    //マイナス対応
     while(operator != -1){
       operatorstr = this.state.setVariableStore[operator];
       str1 = this.state.setVariableStore[operator-1];
@@ -455,7 +501,9 @@ export default class App extends React.Component {
     if(this.state.delFlag === true){
       this.setState({
         delFlag:false,
-        delColor: 'yellow'
+        delColor: 'yellow',
+        setFlag: true,
+        setColor: 'gold'
       });
     } else {
       this.setState({
@@ -463,6 +511,8 @@ export default class App extends React.Component {
         delColor: 'gold',
         addFlag:false,
         addColor: 'yellow',
+        setFlag:false,
+        setColor: 'yellow',
         setFormulasFlag:false
       });
     }
@@ -510,9 +560,13 @@ export default class App extends React.Component {
     } else {
       try {
         //同じ変数はひとつに
+        //入力値制限
+        //()対応
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
         this.setState({
+          setFlag:false,
+          setColor:'yellow',
           setFormulasFlag:true,
           setFormulasNumber:i,
           setFormulasText:data.formulas[i].text
@@ -529,7 +583,6 @@ export default class App extends React.Component {
           } else {
             this.state.setVariableCount.unshift(j);
           }
-
         }
         this.state.setVariable = [];
         this.state.setVarValue = [];
