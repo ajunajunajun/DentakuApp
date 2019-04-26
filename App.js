@@ -17,7 +17,7 @@ export default class App extends React.Component {
       AnimRadius: new Animated.Value(15),
       modeFlag: true, modeColor:'yellow',
       addFlag:false, addColor:'yellow',
-      addName: 'name', addText: 'a + 2 b / 2 = ',
+      addName: 'name', addText: 'Aa + 2 b / 2 = ',
       setFlag:true, setColor:'gold',
       delFlag:false, delColor:'yellow',
       setFormulasFlag:false,
@@ -87,6 +87,11 @@ export default class App extends React.Component {
                 placeholder = 'a + 2 b / 2 = '
               />
             </View>
+            <TouchableOpacity style={[styles.infoButton,{backgroundColor: 'snow'}]}
+              onPress={ this._alertInfo }
+            >
+              <Text style={styles.buttonText}>?</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.enterButton,{backgroundColor: 'orange'}]}
               onPress={ this._pressEnter }
             >
@@ -244,7 +249,6 @@ export default class App extends React.Component {
   }
 
   //asyncstorageのテスト
-  //addmode に infoボタン右上に配置して正規表現説明追加
 
   _init = async() => {
     let object = {
@@ -322,8 +326,11 @@ export default class App extends React.Component {
         delColor:'yellow',
         setFlag:true,
         setColor:'gold',
-        setFormulasFlag:false
+        setFormulasFlag:false,
+        addName: 'name',
+        addText: 'Aa + 2 b / 2 = '
       });
+
     }
   }
   _openAdd = () => {
@@ -331,7 +338,9 @@ export default class App extends React.Component {
       this.setState({
         addFlag:false,
         addColor: 'yellow',
-        setColor: 'gold'
+        setColor: 'gold',
+        addName: 'name',
+        addText: 'Aa + 2 b / 2 = '
       });
     } else {
       this.setState({
@@ -358,7 +367,9 @@ export default class App extends React.Component {
         delColor: 'yellow',
         setFlag:true,
         setColor: 'gold',
-        setFormulasFlag:false
+        setFormulasFlag:false,
+        addName: 'name',
+        addText: 'Aa + 2 b / 2 = '
       });
     }
   }
@@ -395,16 +406,16 @@ export default class App extends React.Component {
             </Text>
           </TouchableOpacity>
         );
-        Alert.alert("success",'LISTに追加しました');
+        Alert.alert("SUCCESS",'LISTに追加しました');
         this.setState({
           addName: 'name',
-          addText: 'a + 2 b / 2 = ',
+          addText: 'Aa + 2 b / 2 = ',
         });
       } catch (error) {
-        alert('error');
+        alert('ERROR');
       }
     } else {
-      Alert.alert("error",'入力に問題があります');
+      Alert.alert("ERROR",'入力に問題があります');
     }
   }
   _pressEnterSet = () => {
@@ -511,7 +522,9 @@ export default class App extends React.Component {
         addColor: 'yellow',
         setFlag:false,
         setColor: 'yellow',
-        setFormulasFlag:false
+        setFormulasFlag:false,
+        addName: 'name',
+        addText: 'Aa + 2 b / 2 = '
       });
     }
   }
@@ -575,7 +588,7 @@ export default class App extends React.Component {
           this.state.setVarValue.push('');
         }
       } catch (err) {
-        alert('error');
+        alert('ERROR');
       }
     }
     this.setState({});
@@ -618,6 +631,12 @@ export default class App extends React.Component {
   }
   _setCancelFlag = () => {
   }
+  _alertInfo = () => {
+    Alert.alert(
+      "INFOMATION",
+      "要素同士は半角空白でお区切りください。\nローマ字を含む文字列は変数として扱われます。\n演算子' * 'は省略可能です。\n\n 入力例：Teihen Takasa / 2 = "
+    );
+  }
   _numSet00 = () => {
     if(this.state.displayFlag == true){
       let str = this.state.display;
@@ -656,7 +675,6 @@ export default class App extends React.Component {
     });
   }
   _Arithmetic = c => {
-    // want change the operator when second pushed
     if( this.state.operatorFlag == true){
       if(this.state.operator !== ''){
         let str;
@@ -791,6 +809,18 @@ const styles = StyleSheet.create({
     bottom:10,
     borderRadius:15,
     borderWidth:1,
+    borderColor:'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoButton: {
+    position: 'absolute',
+    height:50,
+    width:50,
+    right:10,
+    top:10,
+    borderRadius:90,
+    borderWidth:0.5,
     borderColor:'black',
     alignItems: 'center',
     justifyContent: 'center',
