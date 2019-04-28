@@ -3,6 +3,14 @@ import {
   StyleSheet, Text, View, Alert, TouchableOpacity, Animated, ScrollView, TextInput, AsyncStorage
 } from 'react-native';
 
+// 新しい式を上に表示（つかったのも上に）
+// 並び変え
+// リストをアクションで大きく
+// 入力方法の変更
+// = を文字列の最後に常時設置
+// .Buttonの機能変更
+// () の対応
+
 export default class App extends React.Component {
   constructor(props){
     super(props);
@@ -560,8 +568,6 @@ export default class App extends React.Component {
     } else {
       try {
         //同じ変数はひとつに
-        //入力値制限
-        //()対応
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
         this.setState({
@@ -645,6 +651,7 @@ export default class App extends React.Component {
   _setCancelFlag = () => {
   }
   _alertInfo = () => {
+    //これいいかんじの文にする
     Alert.alert(
       "INFOMATION",
       "要素同士は半角空白でお区切りください。\nローマ字を含む文字列は変数として扱われます。\n演算子' * 'は省略可能です。\n\n 入力例：Teihen Takasa / 2 = "
@@ -667,7 +674,6 @@ export default class App extends React.Component {
     });
   }
   _numSeto = () => {
-    // いい感じのつくって
     let str = this.state.display/10;
     this.setState({display:str});
   }
