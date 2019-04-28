@@ -248,8 +248,7 @@ export default class App extends React.Component {
     );
   }
 
-  //asyncstorageのテスト
-
+  //一回追加しないとasyncstotrageの中身del出来ない
   _init = async() => {
     let object = {
       'count': this.state.formulasCount,
@@ -257,8 +256,10 @@ export default class App extends React.Component {
       ],
     };
     try {
-      await AsyncStorage.mergeItem('formulas',JSON.stringify(object));
-
+      const initvalue = await AsyncStorage.getItem('formulas');
+      if(initvalue){}else{
+        await AsyncStorage.setItem('formulas',JSON.stringify(object));
+      }
       const value = await AsyncStorage.getItem('formulas');
       const data = JSON.parse(value);
 
@@ -281,7 +282,7 @@ export default class App extends React.Component {
         );
       }
     } catch (err) {
-      alert('error');
+      alert('errorrrr');
     }
   }
   _AnimDisplay = () => {
