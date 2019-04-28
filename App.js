@@ -248,7 +248,6 @@ export default class App extends React.Component {
     );
   }
 
-  //一回追加しないとasyncstotrageの中身del出来ない
   _init = async() => {
     let object = {
       'count': this.state.formulasCount,
@@ -434,12 +433,13 @@ export default class App extends React.Component {
     }
 
     var ans = [];
+    var str;
     for(i = 0; this.state.setVariableStore[i] != '='; i++){
       ans[i] = this.state.setVariableStore[i];
     }
 
-    const patternOperator1 = new RegExp('[*\/]');
-    const patternOperator2 = new RegExp('[-+]');
+    const patternOperator1 = new RegExp('[*\/] *$');
+    const patternOperator2 = new RegExp('[-+] *$');
 
     var operatorstr = '';
     for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
@@ -448,7 +448,6 @@ export default class App extends React.Component {
         break;
       }
     }
-    //マイナス対応
     while(operator != -1){
       operatorstr = this.state.setVariableStore[operator];
       str1 = this.state.setVariableStore[operator-1];
@@ -499,15 +498,26 @@ export default class App extends React.Component {
       }
     };
     this.setState({setFormulasFlag:false});
-
-    Alert.alert("RESULT",ans.join(' ') + '\n = ' + this.state.setVariableStore[0]);
-    this.setState({
-      strmath: this.state.setVariableStore[0],
-      display: this.state.setVariableStore[0],
-      operator: '',
-      displayFlag: true,
-      operatorFlag: true
-    });
+    const patternOperator3 = new RegExp('^ *[-+*\/ 0-9=]* *$');
+    var iserror;
+    for(i = 0, operator= -1; i < this.state.setVariableStore.length ; i++){
+      if(patternOperator3.test(this.state.setVariableStore[i]) == false){
+        iserror = true;
+        break;
+      }
+    }
+    if(iserror){
+      Alert.alert("ERROR",'入力に問題があります');
+    } else {
+      Alert.alert("RESULT",ans.join(' ') + '\n = ' + this.state.setVariableStore[0]);
+      this.setState({
+        strmath: this.state.setVariableStore[0],
+        display: this.state.setVariableStore[0],
+        operator: '',
+        displayFlag: true,
+        operatorFlag: true
+      });
+    }
   }
   _openDel = () => {
     if(this.state.delFlag === true){
