@@ -267,22 +267,24 @@ export default class App extends React.Component {
       this.setState({formulasCount:count});
 
       for( i = 0; i < this.state.formulasCount; i++){
+        const store = i;
+
         this.state.Formulas.push(
           <TouchableOpacity style={{flex:1}}
-            onPress={ () => this._setFormulas(i)}
+            onPress={ () => this._setFormulas(store)}
             key={i}
           >
           <Text style={{fontSize:25, width:'95%'}}>
-            {data.formulas[i].name}:
+            {data.formulas[store].name}:
           </Text>
           <Text style={{fontSize:25, width:'95%', marginLeft:40}}>
-            {data.formulas[i].text}
+            {data.formulas[store].text}
           </Text>
           </TouchableOpacity>
         );
       }
     } catch (err) {
-      alert('errorrrr');
+      alert('ERROR');
     }
   }
   _AnimDisplay = () => {
