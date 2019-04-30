@@ -94,7 +94,7 @@ export default class App extends React.Component {
               />
               <TextInput style={{fontSize:30, marginLeft:45,marginTop:20,width:'80%'}}
                 onChangeText={(addText) => this.setState({addText})}
-                placeholder = 'a + 2 b / 2 = '
+                placeholder = 'Aa + 2 b / 2 = '
               />
             </View>
             <TouchableOpacity style={[styles.infoButton,{backgroundColor: 'snow'}]}
