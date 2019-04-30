@@ -10,6 +10,7 @@ import {
 // = を文字列の最後に常時設置
 // .Buttonの機能変更
 // () の対応
+// * -> x  わる変更
 
 export default class App extends React.Component {
   constructor(props){
@@ -34,6 +35,7 @@ export default class App extends React.Component {
       judgeVariable:[], setVariable:[],
       setVarValue:[],
       setVariableStore:[], setVariableCount:[],
+      setVariableFlex:1
     };
   }
 
@@ -567,7 +569,6 @@ export default class App extends React.Component {
       );
     } else {
       try {
-        //同じ変数はひとつに
         const value = await AsyncStorage.getItem('formulas');
         const data = JSON.parse(value);
         this.setState({
@@ -594,13 +595,20 @@ export default class App extends React.Component {
         this.state.setVarValue = [];
         for(j = 0; j < this.state.judgeVariable.length ; j++){
           const store = j;
+          var setFlex = 'flex';
+          for(k = 0; k < j; k++){
+            if(this.state.setVariableStore[j] == this.state.setVariableStore[k]){
+              setFlex = 'none';
+              break;
+            }
+          }
+          this.setState();
           this.state.setVariable.push(
-            <View style={{flex:1, flexDirection:'row'}} key={j}>
+            <View style={{display:setFlex,flexDirection:'row'}} key={j}>
               <Text style={{fontSize:30, marginLeft:10}}>{this.state.judgeVariable[j]}:</Text>
               <TextInput style={{fontSize:30, marginLeft:10}}
                 onChangeText={ text => this._valueChange(store,text) }
                 placeholder = 'value'
-                keyboardType = 'decimal-pad'
               />
             </View>
           );
@@ -614,7 +622,11 @@ export default class App extends React.Component {
   }
   _valueChange = (j,text) => {
     var copy = this.state.setVarValue.slice();
-    copy[j] = text;
+    for(i = 0; i < this.state.setVariableStore.length; i++){
+      if(this.state.setVariableStore[j] == this.state.setVariableStore[i]){
+        copy[i] = text;
+      }
+    }
     this.setState({setVarValue: copy});
   }
   _setDeleteFlag = async (i) => {
@@ -651,10 +663,9 @@ export default class App extends React.Component {
   _setCancelFlag = () => {
   }
   _alertInfo = () => {
-    //これいいかんじの文にする
     Alert.alert(
       "INFOMATION",
-      "要素同士は半角空白でお区切りください。\nローマ字を含む文字列は変数として扱われます。\n演算子' * 'は省略可能です。\n\n 入力例：Teihen Takasa / 2 = "
+      "現在' + - * / 'に対応しています。\n数字、記号間には半角空白を入力してください。\nローマ字を含む文字列は変数として扱われます。\n式の最後には' = 'を入力してください。\n' * 'は省略可能です。\n"
     );
   }
   _numSet00 = () => {
