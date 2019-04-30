@@ -11,6 +11,7 @@ import {
 // .Buttonの機能変更
 // () の対応
 // * -> x  わる変更
+//0.8
 
 export default class App extends React.Component {
   constructor(props){
