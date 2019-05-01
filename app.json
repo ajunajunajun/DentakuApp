@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "DentakuApp",
+    "name": "公式電卓",
     "slug": "DentakuApp",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -29,7 +29,7 @@
     "android": {
       "package": "jp.ajunandroid.dentakuapp",
       "permissions":[],
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }
