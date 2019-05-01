@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,7 +27,9 @@
       "bundleIdentifier": "jp.ajunios.dentakuapp"
     },
     "android": {
-      "package": "jp.ajunandroid.dentakuapp"
+      "package": "jp.ajunandroid.dentakuapp",
+      "permissions":[],
+      "versionCode": 2
     }
   }
 }
