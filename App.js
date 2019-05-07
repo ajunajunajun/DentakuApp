@@ -3,15 +3,15 @@ import {
   StyleSheet, Text, View, Alert, TouchableOpacity, Animated, ScrollView, TextInput, AsyncStorage
 } from 'react-native';
 
+// () の対応
+// = を文字列の最後に常時設置
+// 入力方法の変更
 // 新しい式を上に表示（つかったのも上に）
 // 並び変え
 // リストをアクションで大きく
-// 入力方法の変更
-// = を文字列の最後に常時設置
 // .Buttonの機能変更
-// () の対応
 // * -> x  わる変更
-//0.8
+// 入力に小数点を対応
 
 export default class App extends React.Component {
   constructor(props){
